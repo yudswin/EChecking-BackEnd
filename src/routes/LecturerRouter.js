@@ -5,4 +5,5 @@ const lecturerController = require('../controllers/LecturerController');
 
 // CRUD - Create Review Update Delete
 router.post('/create', lecturerController.createUser) // Create
+
 module.exports = router

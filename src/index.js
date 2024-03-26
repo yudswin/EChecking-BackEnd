@@ -19,13 +19,13 @@ app.use(cookieParser())
 
 routes(app);
 
-// mongoose.connect(process.env.MONGODB_URI)
-//     .then(() => {
-//         console.log('Connect Db success!')
-//     })
-//     .catch((err) => {
-//         console.log(err)
-// })
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log('Connect Db success!')
+    })
+    .catch((err) => {
+        console.log(err)
+})
     
 app.listen(port, () => {
     console.log('Server is running in port: ', + port)
