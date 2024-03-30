@@ -8,7 +8,7 @@ const lecturerSchema = new mongoose.Schema(
         email: { type: String, required: true },
         phone: { type: Number, required: true },
         birthday: { type: Date, required: true },
-        gender: { type: mongoose.Schema.Types.Binary, required: true },
+        gender: { type: String, required: true },
         department: { type: String, required: true }
     },
     {
