@@ -9,6 +9,10 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  lecturerID: {
+    type: String,
+    required: true
+  },
   phone: {
     type: String,
     required: true
@@ -22,9 +26,9 @@ const studentSchema = new mongoose.Schema({
     required: true
   },
 },
-{
-  timestamps: true 
-});
+  {
+    timestamps: true
+  });
 
 const User = mongoose.model('User', studentSchema);
 module.exports = User
