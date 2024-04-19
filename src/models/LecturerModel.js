@@ -12,7 +12,7 @@ const lecturerSchema = new mongoose.Schema(
         department: { type: String, required: true }
     },
     {
-        timestamps: true // have the time to create and update
+        timestamps: true 
     }
 );
 
