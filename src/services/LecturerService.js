@@ -1,10 +1,10 @@
-const User = require("../models/studentModel")
+const Lecturer = require("../models/LecturerModel")
 const bcrypt = require("bcrypt")
 // const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = newUser
+        const { firstName, lastName, lecturerID, phone, password, email, courses  } = newUser
         try {
             const checkUser = await User.findOne({
                 email: email

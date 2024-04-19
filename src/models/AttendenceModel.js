@@ -7,12 +7,12 @@ const attendanceSchema = new mongoose.Schema({
         required: true
     },
     studentID: {
-        type: String,  // Or reference the Student model if you have it
+        type: String, 
         required: true
     },
     status: {
         type: String,
-        enum: ['Present', 'Absent', 'Late'], // You can customize statuses
+        enum: ['Present', 'Absent', 'Late'], 
         default: 'Absent'
     },
     date: {

@@ -9,11 +9,6 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    lecturerID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Lecturer',
-        required: true
-    },
     attendances: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Record'
