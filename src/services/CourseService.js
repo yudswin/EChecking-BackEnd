@@ -75,8 +75,32 @@ const getAllCourse = (id) => {
     })
 }
 
+const updateCourse = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const course = await Course.findByIdAndUpdate({
+                _id: id
+            }, data, { new: true })
+            if (course === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The course is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: course
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createCourse,
     getDetails,
-    getAllCourse
+    getAllCourse,
+    updateCourse
 }
