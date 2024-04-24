@@ -9,10 +9,11 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    attendances: [{
+    lecturerID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Record'
-    }],
+        ref: 'Lecturer',
+        required: true
+    }
 }, {
     timestamps: true
 });
