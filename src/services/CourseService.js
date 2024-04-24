@@ -27,16 +27,27 @@ const createCourse = (newCourse) => {
     });
 }
 
-const getDetails = async (id) => {
-    const course = await Course.findById(id);
-    if (!course) {
-        throw new Error('Course not found');
-    }
-    return {
-        status: 'OK',
-        message: 'SUCCESS',
-        data: course
-    }
+const getDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const course = await Course.findById({
+                _id: id
+            })
+            if (course === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCESSS',
+                data: course
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
 }
 
 const getAllCourse = (id) => {

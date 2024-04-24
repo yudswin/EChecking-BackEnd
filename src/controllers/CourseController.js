@@ -26,7 +26,13 @@ const createCourse = async (req, res) => {
 
 const getDetails = async (req, res) => {
     try {
-        const { courseId } = req.params.id
+        const courseId = req.params.courseId
+        if (!courseId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The courseId is required'
+            })
+        }
         const response = await CourseService.getDetails(courseId)
         return res.status(200).json(response)
     } catch (e) {
