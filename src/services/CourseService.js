@@ -43,7 +43,7 @@ const getAllCourse = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const course = await Course.find({
-                lecturer: id
+                lecturerID: id
             }).sort({ createdAt: -1, updatedAt: -1 })
             if (course === null) {
                 resolve({
