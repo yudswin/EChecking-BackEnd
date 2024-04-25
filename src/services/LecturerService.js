@@ -1,53 +1,14 @@
 const Lecturer = require("../models/LecturerModel")
-const User = require("../models/studentModel")
+const User = require("../models/StudentModel.js")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 
 
 
-const createUser = (newUser) => {
-    return new Promise(async (resolve, reject) => {
-        const {  studentName, studentPassword, confirmPassword, email, age, studentID, dePartment, birthDate, phone } = newUser
-        try {
-            const checkUser = await User.findOne({
-                email: email
-            })
-            if (checkUser !== null) {
-                resolve({
-                    status: 'ERR',
-                    message: 'The email is already'
-                })
-            }
-           const hash = bcrypt.hashSync(studentPassword, 10)
-    //       console.log(hash)
-            const createdUser = await User.create({
-                studentName,
-                studentPassword : hash,
-                email,
-                age,
-                studentID,
-                dePartment,
-                birthDate,
-                phone
-            })
-            // console.log(createdUser)
-            if (createdUser) {
-                resolve({
-                    status: 'OK',
-                    message: 'SUCCESS',
-                    data: createdUser
-                })
-            }
-        } catch (e) {
-            reject(e)
-        }
-    })
-}
-
 
 const createLecturer = (newLecturer) => {
     return new Promise(async (resolve, reject) => {
-        const {  lecturerName, lecturerPassword, confirmPassword, email, phone, birthday, gender, department } = newLecturer
+        const {  firstName, lastName, lecturerID, phone, lecturerPassword, email, courses } = newLecturer
         try {
             const checkLecturer = await Lecturer.findOne({
                 email: email
@@ -61,15 +22,15 @@ const createLecturer = (newLecturer) => {
            const hash = bcrypt.hashSync(lecturerPassword, 10)
         //   console.log(hash)
             const createdLecturer = await Lecturer.create({
-                lecturerName,
-                lecturerPassword : hash,
-                email,
+                firstName,
+                lastName,
+                lecturerID,
                 phone,
-                birthday,
-                gender,
-                department
-            })
-            // console.log(createdUser)
+                lecturerPassword : hash,
+                email
+                
+                
+            })       
             if (createdLecturer) {
                 resolve({
                     status: 'OK',
@@ -86,11 +47,11 @@ const createLecturer = (newLecturer) => {
 
 const loginLecturer = (LecturerLogin) =>{
     return new Promise( async (resolve, reject)=>{
-        const{ email, lecturerPassword } = LecturerLogin
+        const{ lecturerID, lecturerPassword } = LecturerLogin
      //   console.log(LecturerLogin)
         try{
-            const checkLecturer = await Lecturer.findOne({ // checkUser = User logged in 
-                email: email
+            const checkLecturer = await Lecturer.findOne({ 
+                lecturerID: lecturerID
             })
             if(checkLecturer === null){ // check if the email has been existed 
                 resolve({
@@ -104,7 +65,7 @@ const loginLecturer = (LecturerLogin) =>{
             if(!comparePassword){
                 resolve({
                     status: "Error",
-                    message: "Password or user is incorrect",
+                    message: "Password or lecturer is incorrect",
                 })
             }
             const access_token = await generalAccessToken({
@@ -118,7 +79,7 @@ const loginLecturer = (LecturerLogin) =>{
         //    console.log(access_token)
             resolve({
                 status: "OK",
-                message: "SUCCESS",
+                message: "SIGN-IN SUCCESS",
                 access_token,
                 refresh_token,
             })
@@ -133,7 +94,7 @@ const updateLecturer = (id, data) =>{
     return new Promise( async (resolve, reject)=>{
         try{
             const checkLecturer = await Lecturer.findOne({
-                _id: id  // find user based on id
+                _id: id  
             })
 
             if(checkLecturer === null){
@@ -156,9 +117,11 @@ const updateLecturer = (id, data) =>{
     })
 }
 
+
+
 module.exports = {
-    createUser, 
     createLecturer, 
     loginLecturer,
     updateLecturer
+
 };
