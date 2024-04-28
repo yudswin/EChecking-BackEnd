@@ -1,29 +1,24 @@
-const LecturerService = require('../services/StudentService')
+const StudentService = require('../services/StudentService')
 const JwtService = require('../services/JwtService')
 
 const loginStudent = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword, phone } = req.body
-        const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        const isCheckEmail = reg.test(email)
-        if (!email || !password || !confirmPassword) {
+        const { studentID, password } = req.body
+        if (!studentID || !password) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
             })
-        } else if (!isCheckEmail) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The input is email'
-            })
-        } else if (password !== confirmPassword) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The password is equal confirmPassword'
-            })
-        }
-        const response = await StudentService.loginStudent(req.body)
-        return res.status(200).json(response)
+        } 
+        const response = await UserService.loginStudent(req.body)
+        const { refresh_token, ...newReponse } = response
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            path: '/',
+        })
+        return res.status(200).json({...newReponse, refresh_token})
     } catch (e) {
         return res.status(404).json({
             message: e
