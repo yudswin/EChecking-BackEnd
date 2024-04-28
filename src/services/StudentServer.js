@@ -4,15 +4,15 @@ const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
 
 const loginStudent = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { id, password } = userLogin
+        const { studentID, password } = userLogin
         try {
             const checkUser = await User.findOne({
-                _id: id
+                studentID: studentID
             })
             if (checkUser === null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The user is not defined'
+                    message: 'The student is not defined'
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
@@ -51,7 +51,7 @@ const updateStudent = (id, data) => {
             if (checkUser === null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The user is not defined'
+                    message: 'The student is not defined'
                 })
             }
 
