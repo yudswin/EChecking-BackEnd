@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const lecturerController = require('../controllers/Studentcontroller');
+const StudentController = require('../controllers/Studentcontroller');
 const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddleware");
 
 // CRUD - Create Review Update Delete
