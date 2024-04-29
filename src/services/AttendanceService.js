@@ -52,7 +52,7 @@ const getAllAttendance = (courseId) => {
             if (course === null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The order is not defined'
+                    message: 'The attendance is not defined'
                 })
             }
             resolve({
@@ -75,7 +75,7 @@ const getDetails = (sessionId) => {
             if (session === null) {
                 resolve({
                     status: 'ERR',
-                    message: 'The order is not defined'
+                    message: 'The session is not defined'
                 })
             }
             resolve({
@@ -89,8 +89,36 @@ const getDetails = (sessionId) => {
     })
 }
 
+const updateAttendance = (sessionId, data) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            const session = await Attendance.findById({
+                _id: sessionId
+            })
+            if (session === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The session is not defined'
+                })
+            }
+            const updateSession = await Attendance.findByIdAndUpdate({
+                _id: sessionId
+            }, data, { new: true })
+
+            resolve ({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: updateSession
+            })
+        } catch (e) { 
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
-    getDetails
+    getDetails,
+    updateAttendance
 }
