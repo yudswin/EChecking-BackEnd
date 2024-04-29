@@ -42,6 +42,55 @@ const createAttentdance = (newAttend) => {
     });
 }
 
+
+const getAllAttendance = (courseId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const sessions = await Attendance.find({
+                courseID: courseId
+            }).sort({ createdAt: -1, updatedAt: -1 })
+            if (course === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCESSS',
+                data: sessions
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const getDetails = (sessionId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const session = await Attendance.findById({
+                _id: sessionId
+            })
+            if (session === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The order is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCESSS',
+                data: session
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createAttentdance,
+    getAllAttendance,
+    getDetails
 }
