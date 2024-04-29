@@ -14,14 +14,17 @@ const createAttentdance = (newAttend) => {
         if (!newAttend) {
             return reject(new Error(' is undefined'));
         }
-        let { type, quiz, courseID } = newAttend;
+        const { type, quiz, courseID } = newAttend;
         // const checkCode = null;
-        code = generateRandomString(6);
+        
 
         try {
-            // while ((checkCode = await Attendance.findOne({ code: code })) == null) {
-            //     code = generateRandomString(6);
-            // }
+            let code = generateRandomString(6);
+            let isCodeExist = await Attendance.findOne({ code: code});
+            while (isCodeExist) {
+                code = generateRandomString(6);
+                isCodeExist = await Attendance.findOne({ code: code});
+            }
 
             const createAttentdance = await Attendance.create({
                 code,
@@ -116,9 +119,44 @@ const updateAttendance = (sessionId, data) => {
     })
 }
 
+const resetCode = (sessionId) => {
+    return new Promise (async (resolve, reject) => {
+        try {
+            const session = await Attendance.findById({
+                _id: sessionId
+            })
+            if (session === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The session is not defined'
+                })
+            }
+            let code = generateRandomString(6);
+            let isCodeExist = await Attendance.findOne({ code: code });
+            while (isCodeExist) {
+                code = generateRandomString(6);
+                isCodeExist = await Attendance.findOne({ code: code });
+            }
+            
+            const resetCode = await Attendance.findByIdAndUpdate({
+                _id: sessionId
+            }, { code: code }, { new: true })
+
+            resolve ({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: resetCode
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
     getDetails,
-    updateAttendance
+    updateAttendance,
+    resetCode
 }

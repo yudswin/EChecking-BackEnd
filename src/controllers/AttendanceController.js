@@ -87,9 +87,28 @@ const updateAttendance = async (req, res) => {
     }
 }
 
+const resetCode = async (req, res) => {
+    try {
+        const sessionId = req.params.sessionId
+        if (!sessionId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The sessionId is required'
+            })
+        }
+        const response = await AttendanceService.resetCode(sessionId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
     getDetails,
-    updateAttendance
+    updateAttendance,
+    resetCode
 }

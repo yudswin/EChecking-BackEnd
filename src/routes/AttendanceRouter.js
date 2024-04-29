@@ -6,5 +6,6 @@ router.post('/create/:courseId', attendanceController.createAttentdance)
 router.get('/getAll/:courseId', attendanceController.getAllAttendance)
 router.get('/getDetails/:sessionId', attendanceController.getDetails)
 router.put('/update/:sessionId', attendanceController.updateAttendance)
+router.put('/resetCode/:sessionId', attendanceController.resetCode)
 
 module.exports = router

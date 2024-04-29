@@ -98,6 +98,7 @@ const updateCourse = (id, data) => {
     })
 }
 
+
 module.exports = {
     createCourse,
     getDetails,
