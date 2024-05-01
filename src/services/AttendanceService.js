@@ -15,8 +15,6 @@ const createAttentdance = (newAttend) => {
             return reject(new Error(' is undefined'));
         }
         const { type, quiz, courseID } = newAttend;
-        // const checkCode = null;
-        
 
         try {
             let code = generateRandomString(6);
@@ -137,7 +135,7 @@ const resetCode = (sessionId) => {
                 code = generateRandomString(6);
                 isCodeExist = await Attendance.findOne({ code: code });
             }
-            
+
             const resetCode = await Attendance.findByIdAndUpdate({
                 _id: sessionId
             }, { code: code }, { new: true })
@@ -153,10 +151,40 @@ const resetCode = (sessionId) => {
     })
 }
 
+const getDetailsByCode = (code) => {
+    return new Promise(async (resolve, reject) => {
+        if (!code) {
+            resolve({
+                status: 'ERR',
+                message: 'The code is required'
+            })
+        }
+        try {
+            const session = await Attendance.findOne({
+                code: code
+            })
+            if (!session) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The session is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: session
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
     getDetails,
     updateAttendance,
-    resetCode
+    resetCode,
+    getDetailsByCode
 }

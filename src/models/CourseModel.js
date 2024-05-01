@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema({
+    // need unique code for each course
     name: {
         type: String,
         required: true

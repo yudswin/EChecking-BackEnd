@@ -29,8 +29,11 @@ const attendanceSchema = new mongoose.Schema({
         required: true
     },
     quiz: {
-        type: String,
-    },
+    type: String,
+    required: function() {
+        return this.type === 'Quiz';
+    }
+}
 }, {
     timestamps: true
 });
