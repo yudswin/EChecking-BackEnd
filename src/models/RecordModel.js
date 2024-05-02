@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const recordSchema = new mongoose.Schema({
-    joinTime: {
-        type: Date,
+    sessionID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
         required: true
     },
     studentID: {
@@ -16,5 +17,5 @@ const recordSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Record = mongoose.model('Record', studentSchema);
+const Record = mongoose.model('Record', recordSchema);
 module.exports = Record

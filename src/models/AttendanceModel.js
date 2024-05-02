@@ -6,19 +6,6 @@ const attendanceSchema = new mongoose.Schema({
         ref: 'Course',
         required: true
     },
-    joinedHistory: [
-        {
-            studentID: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Student',
-                required: true
-            },
-            joinedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
     type: {
         type: String,
         enum: ['Normal', 'Quiz'],

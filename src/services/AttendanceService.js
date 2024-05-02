@@ -18,10 +18,10 @@ const createAttentdance = (newAttend) => {
 
         try {
             let code = generateRandomString(6);
-            let isCodeExist = await Attendance.findOne({ code: code});
+            let isCodeExist = await Attendance.findOne({ code: code });
             while (isCodeExist) {
                 code = generateRandomString(6);
-                isCodeExist = await Attendance.findOne({ code: code});
+                isCodeExist = await Attendance.findOne({ code: code });
             }
 
             const createAttentdance = await Attendance.create({
@@ -91,7 +91,7 @@ const getDetails = (sessionId) => {
 }
 
 const updateAttendance = (sessionId, data) => {
-    return new Promise (async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             const session = await Attendance.findById({
                 _id: sessionId
@@ -106,19 +106,19 @@ const updateAttendance = (sessionId, data) => {
                 _id: sessionId
             }, data, { new: true })
 
-            resolve ({
+            resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: updateSession
             })
-        } catch (e) { 
+        } catch (e) {
             reject(e)
         }
     })
 }
 
 const resetCode = (sessionId) => {
-    return new Promise (async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             const session = await Attendance.findById({
                 _id: sessionId
@@ -140,7 +140,7 @@ const resetCode = (sessionId) => {
                 _id: sessionId
             }, { code: code }, { new: true })
 
-            resolve ({
+            resolve({
                 status: 'OK',
                 message: 'SUCCESS',
                 data: resetCode
@@ -180,11 +180,13 @@ const getDetailsByCode = (code) => {
     })
 }
 
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
     getDetails,
     updateAttendance,
     resetCode,
-    getDetailsByCode
+    getDetailsByCode,
+
 }

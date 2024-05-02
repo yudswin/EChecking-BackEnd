@@ -9,13 +9,13 @@ const createAttentdance = async (req, res) => {
                 message: 'The courseId is required'
             })
         }
-        const type  = req.body;
+        const type = req.body;
         if (!type) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'Type is required'
             });
-        } 
+        }
         const response = await AttendanceService.createAttentdance(req.body);
         return res.status(200).json(response);
     } catch (e) {
@@ -70,7 +70,7 @@ const updateAttendance = async (req, res) => {
                 message: 'The sessionId is required'
             })
         }
-        
+
         const data = req.body
         if (!data) {
             return res.status(200).json({
@@ -114,7 +114,7 @@ const getDetailsByCode = async (req, res) => {
                 message: 'The code is required'
             })
         }
-        
+
         const response = await AttendanceService.getDetailsByCode(session)
         return res.status(200).json(response)
     } catch (e) {
@@ -124,11 +124,13 @@ const getDetailsByCode = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     createAttentdance,
     getAllAttendance,
     getDetails,
     updateAttendance,
     resetCode,
-    getDetailsByCode
+    getDetailsByCode,
 }
