@@ -1,41 +1,11 @@
 const Lecturer = require('../models/LecturerModel')
 const LecturerService = require('../services/LecturerService')
-// const JwtService = require('../services/JwtService')
+ const JwtService = require('../services/JwtService')
 
-const createUser = async (req, res) => {
-    try {
-        const { studentName, studentPassword, confirmPassword, email, age, studentID, dePartment, birthDate, phone } = req.body
-        const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        const isCheckEmail = reg.test(email)
-        if (!email || !studentPassword || !confirmPassword) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The input is required'
-            })
-        } else if (!isCheckEmail) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The input is email'
-            })
-        } else if (studentPassword !== confirmPassword) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'The password is equal confirmPassword'
-            })
-        }
-    //    console.log(req.body)
-        const response = await LecturerService.createUser(req.body)
-        return res.status(200).json(response)
-    } catch (e) {
-        return res.status(404).json({
-            message: e
-        })
-    }
-}
 
 const createLecturer = async (req, res) => {
     try {
-        const { lecturerName, lecturerPassword, confirmPassword, email, phone, birthday, gender, department } = req.body
+        const { firstName, lastName, lecturerID, phone, lecturerPassword, confirmPassword, email, courses } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
         if (!email || !lecturerPassword || !confirmPassword) {
@@ -66,19 +36,17 @@ const createLecturer = async (req, res) => {
 
 const loginLecturer = async (req, res) =>{
     try{
-        const { email, lecturerPassword } = req.body
+        const { lecturerID, lecturerPassword } = req.body
      //   console.log(req.body)
-        const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        const isCheckEmail = reg.test(email)
-        if (!email || !lecturerPassword) {
+        if (!lecturerPassword) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
             })
-        } else if (!isCheckEmail) {
+        } else if (!lecturerID) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The input is email'
+                message: 'The input is ID'
             })
         }
 
@@ -112,9 +80,47 @@ const updateLecturer = async (req, res) =>{
     }
 } 
 
+
+const refreshToken = async (req, res) =>{
+    try{
+        const refresh_token = req.headers.token.split(' ')[1]       // create Beare in Headers of Postman  (put the refresh token to headers  => verify refresh token => ))
+        if(!refresh_token){
+            return res.status(200).json({
+                status: "ERROR",
+                msg: "The refresh token is required"
+            })
+        }
+
+        const response = await JwtService.refreshTokenJwtService(refresh_token)
+        return res.status(200).json(response)
+    }catch(error){
+        return res.status(404).json({
+            mgs: error
+        })
+    }
+} 
+
+
+const logoutLecturer = async (req, res) => {
+    try {
+        res.clearCookie('refresh_token')
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Logout successfully'
+        })
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
 module.exports = {
-    createUser, 
     createLecturer, 
     loginLecturer, 
-    updateLecturer
+    updateLecturer,
+    refreshToken,
+    logoutLecturer
+
 }

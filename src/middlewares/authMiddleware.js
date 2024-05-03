@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const authMiddleWare = (req, res, next) => {
+const authLecturerMiddleWare = (req, res, next) => {
     if (!req.headers.token) {
         return res.status(401).json({
             message: 'No token provided',
@@ -11,15 +11,16 @@ const authMiddleWare = (req, res, next) => {
     }
 
     const token = req.headers.token.split(' ')[1]
+    const LecturerId = req.params.id
     console.log('token', req.headers.token);
-    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, lecturer) {
         if (err) {
             return res.status(401).json({
                 message: 'Failed to authenticate token',
                 status: 'ERROR'
             })
         }
-        if (user?.isAdmin) {
+        if (lecturer?.id === LecturerId) {
             next()
         } else {
             return res.status(403).json({
@@ -36,15 +37,15 @@ const authUserMiddleWare = (req, res, next) => {
     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
         if (err) {
             return res.status(404).json({
-                message: 'The authemtication',
+                message: 'The authentication',
                 status: 'ERROR'
             })
         }
-        if (user?.isAdmin || user?.id === userId) {
+        if (user?.id === userId) {
             next()
         } else {
             return res.status(404).json({
-                message: 'The authemtication',
+                message: 'The authentication',
                 status: 'ERROR'
             })
         }
@@ -52,6 +53,6 @@ const authUserMiddleWare = (req, res, next) => {
 }
 
 module.exports = {
-    authMiddleWare,
+    authLecturerMiddleWare,
     authUserMiddleWare
 }

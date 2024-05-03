@@ -28,9 +28,8 @@ const refreshTokenJwtService = (token) => {
                         message: 'Authentication failed.'
                     })
                 }
-                const accessToken = await genneralAccessToken({
-                    id: user?.id,
-                    isAdmin: user?.isAdmin
+                const accessToken = await generalAccessToken({
+                    id: user?.id
                 })
                 resolve({
                     status: 'OK',
