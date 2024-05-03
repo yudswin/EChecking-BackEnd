@@ -1,12 +1,49 @@
-const User = require("../models/StudentModel")
+const Student = require("../models/StudentModel")
 const bcrypt = require("bcrypt")
 const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
 
-const loginStudent = (userLogin) => {
+const createStudent = (newStudent) => {
     return new Promise(async (resolve, reject) => {
-        const { studentID, password } = userLogin
+        const {  firstName, lastName, studentID, phone, studentPassword, email } = newStudent
         try {
-            const checkUser = await User.findOne({
+            const checkStudent = await Student.findOne({
+                email: email
+            })
+            if (checkStudent !== null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The email is already'
+                })
+            }
+           const hash = bcrypt.hashSync(studentPassword, 10)
+        //   console.log(hash)
+            const createdStudent = await Student.create({
+                firstName,
+                lastName,
+                lecturerID,
+                phone,
+                studentPassword : hash,
+                email
+                
+                
+            })       
+            if (createdStudent) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createdStudent
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+const loginStudent = (studentLogin) => {
+    return new Promise(async (resolve, reject) => {
+        const { studentID, password } = studentLogin
+        try {
+            const checkUser = await Student.findOne({
                 studentID: studentID
             })
             if (checkUser === null) {
@@ -45,7 +82,7 @@ const loginStudent = (userLogin) => {
 const updateStudent = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkUser = await User.findOne({
+            const checkUser = await Student.findOne({
                 _id: id
             })
             if (checkUser === null) {
@@ -55,7 +92,7 @@ const updateStudent = (id, data) => {
                 })
             }
 
-            const updatedUser = await User.findByIdAndUpdate(id, data, { new: true })
+            const updatedStudent = await Student.findByIdAndUpdate(id, data, { new: true })
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -68,6 +105,7 @@ const updateStudent = (id, data) => {
 }
 
 module.exports = {
+    createStudent,
     loginStudent,
     updateStudent
 };
