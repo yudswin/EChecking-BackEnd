@@ -7,5 +7,6 @@ const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddle
 router.post('/sign-in', Studentcontroller.loginStudent) //  login of Student
 router.put('/update user/:id',authUserMiddleWare, Studentcontroller.updateStudent)
 router.post('/login', Studentcontroller.logoutStudent);
-
+router.post('/create', StudentController.createStudent);
+router.post('/refresh-token',  StudentController.refreshToken)
 module.exports = router
