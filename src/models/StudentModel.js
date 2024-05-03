@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  lecturerID: {
+  studentID: {
     type: String,
     required: true
   },
@@ -30,5 +30,7 @@ const studentSchema = new mongoose.Schema({
     timestamps: true
   });
 
-const User = mongoose.model('User', studentSchema);
+const User = mongoose.model('Student', studentSchema);
 module.exports = User
+
+
