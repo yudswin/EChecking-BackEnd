@@ -4,7 +4,7 @@ const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
 
 const createStudent = (newStudent) => {
     return new Promise(async (resolve, reject) => {
-        const {  firstName, lastName, studentID, phone, studentPassword, email } = newStudent
+        const { firstName, lastName, studentID, phone, studentPassword, email } = newStudent
         try {
             const checkStudent = await Student.findOne({
                 email: email
@@ -15,18 +15,18 @@ const createStudent = (newStudent) => {
                     message: 'The email is already'
                 })
             }
-           const hash = bcrypt.hashSync(studentPassword, 10)
-        //   console.log(hash)
+            const hash = bcrypt.hashSync(studentPassword, 10)
+            //   console.log(hash)
             const createdStudent = await Student.create({
                 firstName,
                 lastName,
                 lecturerID,
                 phone,
-                studentPassword : hash,
+                studentPassword: hash,
                 email
-                
-                
-            })       
+
+
+            })
             if (createdStudent) {
                 resolve({
                     status: 'OK',

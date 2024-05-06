@@ -1,6 +1,6 @@
 const Lecturer = require('../models/LecturerModel')
 const LecturerService = require('../services/LecturerService')
- const JwtService = require('../services/JwtService')
+const JwtService = require('../services/JwtService')
 
 
 const createLecturer = async (req, res) => {
