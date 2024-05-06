@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema({
+    // need unique code for each course
     name: {
         type: String,
         required: true
@@ -13,11 +14,7 @@ const courseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Lecturer',
         required: true
-    },
-    attendances: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Record'
-    }],
+    }
 }, {
     timestamps: true
 });

@@ -6,19 +6,21 @@ const attendanceSchema = new mongoose.Schema({
         ref: 'Course',
         required: true
     },
-    studentID: {
-        type: String,  // Or reference the Student model if you have it
+    type: {
+        type: String,
+        enum: ['Normal', 'Quiz'],
+        required: true,
+    },
+    code: {
+        type: String,
         required: true
     },
-    status: {
-        type: String,
-        enum: ['Present', 'Absent', 'Late'], // You can customize statuses
-        default: 'Absent'
-    },
-    date: {
-        type: Date,
-        default: Date.now
+    quiz: {
+    type: String,
+    required: function() {
+        return this.type === 'Quiz';
     }
+}
 }, {
     timestamps: true
 });
