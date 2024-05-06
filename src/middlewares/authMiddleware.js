@@ -11,7 +11,7 @@ const authLecturerMiddleWare = (req, res, next) => {
     }
 
     const token = req.headers.token.split(' ')[1]
-    const LecturerId = req.params.id
+    // const LecturerId = req.params.id
     console.log('token', req.headers.token);
     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, lecturer) {
         if (err) {
@@ -20,20 +20,21 @@ const authLecturerMiddleWare = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        if (lecturer?.id === LecturerId) {
-            next()
-        } else {
-            return res.status(403).json({
-                message: 'You are not authorized to perform this action',
-                status: 'ERROR'
-            })
-        }
+        // if (lecturer?.id === LecturerId) {
+        //     next()
+        // } else {
+        //     return res.status(403).json({
+        //         message: 'You are not authorized to perform this action',
+        //         status: 'ERROR'
+        //     })
+        // }
+        next()
     });
 }
 
 const authUserMiddleWare = (req, res, next) => {
     const token = req.headers.token.split(' ')[1]
-    const userId = req.params.id
+//    const userId = req.params.id
     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
         if (err) {
             return res.status(404).json({
@@ -41,14 +42,15 @@ const authUserMiddleWare = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        if (user?.id === userId) {
-            next()
-        } else {
-            return res.status(404).json({
-                message: 'The authentication',
-                status: 'ERROR'
-            })
-        }
+        // if (user?.id === userId) {
+        //     next()
+        // } else {
+        //     return res.status(404).json({
+        //         message: 'The authentication',
+        //         status: 'ERROR'
+        //     })
+        // }
+        next()
     });
 }
 
