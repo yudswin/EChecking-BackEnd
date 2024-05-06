@@ -50,7 +50,7 @@ const getAllAttendance = (courseId) => {
             const sessions = await Attendance.find({
                 courseID: courseId
             }).sort({ createdAt: -1, updatedAt: -1 })
-            if (course === null) {
+            if (courseId === null) {
                 resolve({
                     status: 'ERR',
                     message: 'The attendance is not defined'
