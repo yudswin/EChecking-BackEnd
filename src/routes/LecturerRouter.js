@@ -5,10 +5,10 @@ const lecturerController = require('../controllers/LecturerController');
 
 
 // CRUD - Create Review Update Delete
-router.post('/Create', lecturerController.createLecturer) // Create Lecturer
-router.post('/Sign-in', lecturerController.loginLecturer)   //login
-router.post('/Log-out', lecturerController.logoutLecturer)
-router.put('/Update/:id', lecturerController.updateLecturer)   // update Lecturer based on specified 'id' (using PUT)
+router.post('/create', lecturerController.createLecturer) // Create Lecturer
+router.post('/signin', lecturerController.loginLecturer)   //login
+router.post('/logout', lecturerController.logoutLecturer)
+router.put('/update/:id', lecturerController.updateLecturer)   // update Lecturer based on specified 'id' (using PUT)
 router.post('/refresh-token',  lecturerController.refreshToken)
 
 // router.delete('/Delete/:id', authLecturerMiddleWare, lecturerController.deleteLecturer) // delete Lecturer based on specified 'id' (using DELETE)
