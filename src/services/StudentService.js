@@ -1,6 +1,9 @@
 const Student = require("../models/StudentModel")
 const bcrypt = require("bcrypt")
-const { genneralAccessToken, genneralRefreshToken } = require("./JwtService")
+const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
+
+
+
 
 const createStudent = (newStudent) => {
     return new Promise(async (resolve, reject) => {
@@ -20,7 +23,7 @@ const createStudent = (newStudent) => {
             const createdStudent = await Student.create({
                 firstName,
                 lastName,
-                lecturerID,
+                studentID,
                 phone,
                 studentPassword : hash,
                 email
@@ -39,73 +42,84 @@ const createStudent = (newStudent) => {
         }
     })
 }
-const loginStudent = (studentLogin) => {
-    return new Promise(async (resolve, reject) => {
-        const { studentID, password } = studentLogin
-        try {
-            const checkUser = await Student.findOne({
+
+
+const loginStudent = (StudentLogin) =>{
+    return new Promise( async (resolve, reject)=>{
+        const{ studentID, studentPassword } = StudentLogin
+     //   console.login
+        try{
+            const checkStudent = await Student.findOne({ 
                 studentID: studentID
             })
-            if (checkUser === null) {
+            if(checkStudent === null){ // check if the email has been existed 
                 resolve({
-                    status: 'ERR',
-                    message: 'The student is not defined'
+                    status: "Error",
+                    message: "The student is not defined",
                 })
             }
-            const comparePassword = bcrypt.compareSync(password, checkUser.password)
+            const comparePassword = bcrypt.compareSync(studentPassword, checkStudent.studentPassword)
+        //    console.log(comparePassword)
 
-            if (!comparePassword) {
+            if(!comparePassword){
                 resolve({
-                    status: 'ERR',
-                    message: 'The password or user is incorrect'
+                    status: "Error",
+                    message: "Password or student is incorrect",
                 })
             }
-            const access_token = await genneralAccessToken({
-                id: checkUser.id,
+            const access_token = await generalAccessToken({
+                id: checkStudent.id,
             })
 
-            const refresh_token = await genneralRefreshToken({
-                id: checkUser.id,
+            const refresh_token = await generalRefreshToken({ // when access token is expired => provide the new access_token
+                id: checkStudent.id,
             })
 
+        //    console.log(access_token)
             resolve({
-                status: 'OK',
-                message: 'SUCCESS',
+                status: "OK",
+                message: "SIGN-IN SUCCESS",
                 access_token,
-                refresh_token
+                refresh_token,
             })
-        } catch (e) {
-            reject(e)
+            
+        }catch(e){
+            reject(e);
         }
     })
 }
-const updateStudent = (id, data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const checkUser = await Student.findOne({
-                _id: id
+
+const updateStudent = (id, data) =>{
+    return new Promise( async (resolve, reject)=>{
+        try{
+            const checkStudent = await Student.findOne({
+                _id: id  
             })
-            if (checkUser === null) {
+
+            if(checkStudent === null){
                 resolve({
-                    status: 'ERR',
-                    message: 'The student is not defined'
+                    status: "Error",
+                    mgs: "The student is not defined"
                 })
             }
 
-            const updatedStudent = await Student.findByIdAndUpdate(id, data, { new: true })
+            const updatedStudent = await Student.findByIdAndUpdate(id, data, {new: true})
             resolve({
-                status: 'OK',
-                message: 'SUCCESS',
-                data: updateStudent
+                status: "OK",
+                message: "SUCCESS",
+                data: updatedStudent
             })
-        } catch (e) {
-            reject(e)
+            
+        }catch(e){
+            reject(e);
         }
     })
 }
+
+
 
 module.exports = {
-    createStudent,
+    createStudent, 
     loginStudent,
     updateStudent
 };
