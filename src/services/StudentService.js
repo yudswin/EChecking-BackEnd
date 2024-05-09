@@ -1,4 +1,5 @@
 const Student = require("../models/StudentModel")
+// const User = require("../models/StudentModel.js")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 
@@ -7,7 +8,7 @@ const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 
 const createStudent = (newStudent) => {
     return new Promise(async (resolve, reject) => {
-        const {  firstName, lastName, studentID, phone, studentPassword, email } = newStudent
+        const {  firstName, lastName, studentID, phone, password, email } = newStudent
         try {
             const checkStudent = await Student.findOne({
                 email: email
@@ -18,14 +19,14 @@ const createStudent = (newStudent) => {
                     message: 'The email is already'
                 })
             }
-           const hash = bcrypt.hashSync(studentPassword, 10)
+           const hash = bcrypt.hashSync(password, 10)
         //   console.log(hash)
             const createdStudent = await Student.create({
                 firstName,
                 lastName,
                 studentID,
                 phone,
-                studentPassword : hash,
+                password : hash,
                 email
                 
                 
@@ -46,19 +47,19 @@ const createStudent = (newStudent) => {
 
 const loginStudent = (StudentLogin) =>{
     return new Promise( async (resolve, reject)=>{
-        const{ studentID, studentPassword } = StudentLogin
+        const{ studentID, password } = StudentLogin
      //   console.login
         try{
             const checkStudent = await Student.findOne({ 
                 studentID: studentID
             })
-            if(checkStudent === null){ // check if the email has been existed 
+            if(checkStudent === null){ 
                 resolve({
                     status: "Error",
                     message: "The student is not defined",
                 })
             }
-            const comparePassword = bcrypt.compareSync(studentPassword, checkStudent.studentPassword)
+            const comparePassword = bcrypt.compareSync(password, checkStudent.password)
         //    console.log(comparePassword)
 
             if(!comparePassword){
@@ -122,4 +123,5 @@ module.exports = {
     createStudent, 
     loginStudent,
     updateStudent
+
 };
