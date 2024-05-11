@@ -2,7 +2,7 @@ const RecordService = require('../services/RecordService')
 
 const createRecord = async (req, res) => {
     try {
-        const { studentID, submissionPath } = req.body;
+        const { studentID } = req.body;
         const sessionID = req.params.sessionId;
         
         if (!sessionID) {
@@ -18,7 +18,7 @@ const createRecord = async (req, res) => {
                 message: 'The name is required'
             });
         }
-        const response = await RecordService.createRecord(sessionID, req.body);
+        const response = await RecordService.createRecord(sessionID, req.body, req.files);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
