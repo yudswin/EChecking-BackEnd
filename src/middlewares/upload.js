@@ -18,11 +18,13 @@ const storage = multer.diskStorage({
         if(
             file.mimetype === "image/jpeg"||
             file.mimetype === "image/png"||
-            file.mimetype === "application/pdf"
+            file.mimetype === "application/pdf"||
+            file.mimetype === "application/vnd.ms-excel" ||
+            file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ){
             callback(null, true)
         } else{
-            console.log("only jpg, png or pdf file supported!")
+            console.log("only jpg, png, pdf, xls, or xlsx files are supported!file supported!")
             callback(null, false)
         }
     },
