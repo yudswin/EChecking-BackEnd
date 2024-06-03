@@ -12,7 +12,7 @@ router.put('/update/:id',authLecturerMiddleWare,  lecturerController.updateLectu
 router.post('/refresh-token',  lecturerController.refreshToken)
 
 // router.delete('/Delete/:id', authLecturerMiddleWare, lecturerController.deleteLecturer) // delete Lecturer based on specified 'id' (using DELETE)
-// router.get('/Get-Lecturer-Detail/:id', authLecturerMiddleWare, lecturerController.getLecturerDetail)    // get one lecturer
+router.get('/getDetails/:id', authLecturerMiddleWare, lecturerController.getDetails)    // get one lecturer
 // router.get('/Get-Lecturer-Name/:id', lecturerController.getLecturerName)    // get one lecturer
 
 

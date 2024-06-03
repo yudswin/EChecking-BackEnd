@@ -115,12 +115,31 @@ const logoutLecturer = async (req, res) => {
     }
 }
 
+const getDetails = async (req, res) => {
+    try {
+        const LecturerId = req.params.id
+        if (!LecturerId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The LecturerId is required'
+            })
+        }
+        const response = await LecturerService.getDetails(LecturerId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 module.exports = {
     createLecturer, 
     loginLecturer, 
     updateLecturer,
     refreshToken,
-    logoutLecturer
+    logoutLecturer,
+    getDetails
 
 }

@@ -8,7 +8,7 @@ const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 
 const createLecturer = (newLecturer) => {
     return new Promise(async (resolve, reject) => {
-        const {  firstName, lastName, lecturerID, phone, lecturerPassword, email, courses } = newLecturer
+        const { firstName, lastName, lecturerID, phone, lecturerPassword, email, courses } = newLecturer
         try {
             const checkLecturer = await Lecturer.findOne({
                 email: email
@@ -19,18 +19,18 @@ const createLecturer = (newLecturer) => {
                     message: 'The email is already'
                 })
             }
-           const hash = bcrypt.hashSync(lecturerPassword, 10)
-        //   console.log(hash)
+            const hash = bcrypt.hashSync(lecturerPassword, 10)
+            //   console.log(hash)
             const createdLecturer = await Lecturer.create({
                 firstName,
                 lastName,
                 lecturerID,
                 phone,
-                lecturerPassword : hash,
+                lecturerPassword: hash,
                 email
-                
-                
-            })       
+
+
+            })
             if (createdLecturer) {
                 resolve({
                     status: 'OK',
@@ -45,24 +45,24 @@ const createLecturer = (newLecturer) => {
 }
 
 
-const loginLecturer = (LecturerLogin) =>{
-    return new Promise( async (resolve, reject)=>{
-        const{ lecturerID, lecturerPassword } = LecturerLogin
-     //   console.log(LecturerLogin)
-        try{
-            const checkLecturer = await Lecturer.findOne({ 
+const loginLecturer = (LecturerLogin) => {
+    return new Promise(async (resolve, reject) => {
+        const { lecturerID, lecturerPassword } = LecturerLogin
+        //   console.log(LecturerLogin)
+        try {
+            const checkLecturer = await Lecturer.findOne({
                 lecturerID: lecturerID
             })
-            if(checkLecturer === null){ // check if the email has been existed 
+            if (checkLecturer === null) { // check if the email has been existed 
                 resolve({
                     status: "Error",
                     message: "The lecturer is not defined",
                 })
             }
             const comparePassword = bcrypt.compareSync(lecturerPassword, checkLecturer.lecturerPassword)
-        //    console.log(comparePassword)
+            //    console.log(comparePassword)
 
-            if(!comparePassword){
+            if (!comparePassword) {
                 resolve({
                     status: "Error",
                     message: "Password or lecturer is incorrect",
@@ -76,42 +76,67 @@ const loginLecturer = (LecturerLogin) =>{
                 id: checkLecturer.id,
             })
 
-        //    console.log(access_token)
+            //    console.log(access_token)
             resolve({
                 status: "OK",
                 message: "SIGN-IN SUCCESS",
                 access_token,
                 refresh_token,
             })
-            
-        }catch(e){
+
+        } catch (e) {
             reject(e);
         }
     })
 }
 
-const updateLecturer = (id, data) =>{
-    return new Promise( async (resolve, reject)=>{
-        try{
+const updateLecturer = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const checkLecturer = await Lecturer.findOne({
-                _id: id  
+                _id: id
             })
 
-            if(checkLecturer === null){
+            if (checkLecturer === null) {
                 resolve({
                     status: "Error",
                     mgs: "The lecturer is not defined"
                 })
             }
 
-            const updatedLecturer = await Lecturer.findByIdAndUpdate(id, data, {new: true})
+            const updatedLecturer = await Lecturer.findByIdAndUpdate(id, data, { new: true })
             resolve({
                 status: "OK",
                 message: "SUCCESS",
                 data: updatedLecturer
             })
-            
-        }catch(e){
+
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+const getDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkLecturer = await Lecturer.findOne({
+                _id: id
+            })
+
+            if (checkLecturer === null) {
+                resolve({
+                    status: "Error",
+                    mgs: "The lecturer is not defined"
+                })
+            }
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: checkLecturer
+            })
+
+        } catch (e) {
             reject(e);
         }
     })
@@ -120,8 +145,8 @@ const updateLecturer = (id, data) =>{
 
 
 module.exports = {
-    createLecturer, 
+    createLecturer,
     loginLecturer,
-    updateLecturer
-
+    updateLecturer,
+    getDetails
 };

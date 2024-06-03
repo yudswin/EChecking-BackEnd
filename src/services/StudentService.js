@@ -117,11 +117,34 @@ const updateStudent = (id, data) =>{
     })
 }
 
+const getDetails = (id) =>{
+    return new Promise( async (resolve, reject)=>{
+        try{
+            const checkStudent = await Student.findOne({
+                _id: id
+            })
+            if(checkStudent === null){
+                resolve({
+                    status: "Error",
+                    mgs: "The student is not defined"
+                })
+            }
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: checkStudent
+            })
+        }catch(e){
+            reject(e);
+        }
+    })
+}
+
 
 
 module.exports = {
     createStudent, 
     loginStudent,
-    updateStudent
-
-};
+    updateStudent,
+    getDetails
+}

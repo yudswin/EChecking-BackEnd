@@ -10,4 +10,6 @@ router.put('/update/:id', authUserMiddleWare, StudentController.updateStudent)
 router.post('/logout', StudentController.logoutStudent);
 router.post('/create', StudentController.createStudent);
 router.post('/refresh-token',  StudentController.refreshToken)
+router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
+
 module.exports = router

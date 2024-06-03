@@ -115,12 +115,30 @@ const logoutStudent = async (req, res) => {
     }
 }
 
+const getDetails = async (req, res) => {
+    try {
+        const studentId = req.params.id
+        if (!studentId) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The studentId is required'
+            })
+        }
+        const response = await StudentService.getDetails(studentId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 module.exports = {
     createStudent, 
     loginStudent, 
     updateStudent,
     refreshToken,
-    logoutStudent
-
+    logoutStudent,
+    getDetails
 }
