@@ -8,7 +8,7 @@ const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 
 const createStudent = (newStudent) => {
     return new Promise(async (resolve, reject) => {
-        const {  firstName, lastName, studentID, phone, password, email } = newStudent
+        const { firstName, lastName, studentID, phone, password, email } = newStudent
         try {
             const checkStudent = await Student.findOne({
                 email: email
@@ -19,18 +19,18 @@ const createStudent = (newStudent) => {
                     message: 'The email is already'
                 })
             }
-           const hash = bcrypt.hashSync(password, 10)
-        //   console.log(hash)
+            const hash = bcrypt.hashSync(password, 10)
+            //   console.log(hash)
             const createdStudent = await Student.create({
                 firstName,
                 lastName,
                 studentID,
                 phone,
-                password : hash,
+                password: hash,
                 email
-                
-                
-            })       
+
+
+            })
             if (createdStudent) {
                 resolve({
                     status: 'OK',
@@ -45,24 +45,24 @@ const createStudent = (newStudent) => {
 }
 
 
-const loginStudent = (StudentLogin) =>{
-    return new Promise( async (resolve, reject)=>{
-        const{ studentID, password } = StudentLogin
-     //   console.login
-        try{
-            const checkStudent = await Student.findOne({ 
+const loginStudent = (StudentLogin) => {
+    return new Promise(async (resolve, reject) => {
+        const { studentID, password } = StudentLogin
+        //   console.login
+        try {
+            const checkStudent = await Student.findOne({
                 studentID: studentID
             })
-            if(checkStudent === null){ 
+            if (checkStudent === null) {
                 resolve({
                     status: "Error",
                     message: "The student is not defined",
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkStudent.password)
-        //    console.log(comparePassword)
+            //    console.log(comparePassword)
 
-            if(!comparePassword){
+            if (!comparePassword) {
                 resolve({
                     status: "Error",
                     message: "Password or student is incorrect",
@@ -76,54 +76,54 @@ const loginStudent = (StudentLogin) =>{
                 id: checkStudent.id,
             })
 
-        //    console.log(access_token)
+            //    console.log(access_token)
             resolve({
                 status: "OK",
                 message: "SIGN-IN SUCCESS",
                 access_token,
                 refresh_token,
             })
-            
-        }catch(e){
+
+        } catch (e) {
             reject(e);
         }
     })
 }
 
-const updateStudent = (id, data) =>{
-    return new Promise( async (resolve, reject)=>{
-        try{
+const updateStudent = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const checkStudent = await Student.findOne({
-                _id: id  
+                _id: id
             })
 
-            if(checkStudent === null){
+            if (checkStudent === null) {
                 resolve({
                     status: "Error",
                     mgs: "The student is not defined"
                 })
             }
 
-            const updatedStudent = await Student.findByIdAndUpdate(id, data, {new: true})
+            const updatedStudent = await Student.findByIdAndUpdate(id, data, { new: true })
             resolve({
                 status: "OK",
                 message: "SUCCESS",
                 data: updatedStudent
             })
-            
-        }catch(e){
+
+        } catch (e) {
             reject(e);
         }
     })
 }
 
-const getDetails = (id) =>{
-    return new Promise( async (resolve, reject)=>{
-        try{
+const getDetails = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
             const checkStudent = await Student.findOne({
                 _id: id
             })
-            if(checkStudent === null){
+            if (checkStudent === null) {
                 resolve({
                     status: "Error",
                     mgs: "The student is not defined"
@@ -134,7 +134,28 @@ const getDetails = (id) =>{
                 message: "SUCCESS",
                 data: checkStudent
             })
-        }catch(e){
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+const getAllStudents = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const students = await Student.find({})
+            if (students === null) {
+                resolve({
+                    status: "Error",
+                    mgs: "The student is not defined"
+                })
+            }
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: students
+            })
+        } catch (e) {
             reject(e);
         }
     })
@@ -143,8 +164,9 @@ const getDetails = (id) =>{
 
 
 module.exports = {
-    createStudent, 
+    createStudent,
     loginStudent,
     updateStudent,
-    getDetails
+    getDetails,
+    getAllStudents
 }

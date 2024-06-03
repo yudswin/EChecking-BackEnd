@@ -11,5 +11,6 @@ router.post('/logout', StudentController.logoutStudent);
 router.post('/create', StudentController.createStudent);
 router.post('/refresh-token',  StudentController.refreshToken)
 router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
+router.get('/getAll', StudentController.getAllStudents) 
 
 module.exports = router
