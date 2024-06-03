@@ -83,15 +83,15 @@ const updateStudent = async (req, res) =>{
 
 const refreshToken = async (req, res) =>{
     try{
-        const refresh_token = req.headers.token.split(' ')[1]       // create Beare in Headers of Postman  (put the refresh token to headers  => verify refresh token => ))
-        if(!refresh_token){
+        const refreshToken = req.headers.token.split(' ')[1]       // create Beare in Headers of Postman  (put the refresh token to headers  => verify refresh token => ))
+        if(!refreshToken){
             return res.status(200).json({
                 status: "ERROR",
                 msg: "The refresh token is required"
             })
         }
 
-        const response = await JwtService.refreshTokenJwtService(refresh_token)
+        const response = await JwtService.refreshTokenJwtService(refreshToken)
         return res.status(200).json(response)
     }catch(error){
         return res.status(404).json({
@@ -103,7 +103,7 @@ const refreshToken = async (req, res) =>{
 
 const logoutStudent = async (req, res) => {
     try {
-        res.clearCookie('refresh_token')
+        res.clearCookie('refreshToken')
         return res.status(200).json({
             status: 'OK',
             message: 'Logout successfully'

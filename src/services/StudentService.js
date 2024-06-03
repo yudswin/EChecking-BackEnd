@@ -68,11 +68,11 @@ const loginStudent = (StudentLogin) => {
                     message: "Password or student is incorrect",
                 })
             }
-            const access_token = await generalAccessToken({
+            const accessToken = await generalAccessToken({
                 id: checkStudent.id,
             })
 
-            const refresh_token = await generalRefreshToken({ // when access token is expired => provide the new access_token
+            const refreshToken = await generalRefreshToken({ // when access token is expired => provide the new access_token
                 id: checkStudent.id,
             })
 
@@ -80,8 +80,8 @@ const loginStudent = (StudentLogin) => {
             resolve({
                 status: "OK",
                 message: "SIGN-IN SUCCESS",
-                access_token,
-                refresh_token,
+                accessToken,
+                refreshToken,
             })
 
         } catch (e) {
