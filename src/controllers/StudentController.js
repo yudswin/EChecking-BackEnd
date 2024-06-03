@@ -133,6 +133,17 @@ const getDetails = async (req, res) => {
     }
 }
 
+const getAllStudents = async (req, res) => {
+    try {
+        const response = await StudentService.getAllStudents()
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 module.exports = {
     createStudent, 
@@ -140,5 +151,6 @@ module.exports = {
     updateStudent,
     refreshToken,
     logoutStudent,
-    getDetails
+    getDetails,
+    getAllStudents
 }
