@@ -69,7 +69,37 @@ const getAllRecord = (session) => {
     });
 }
 
+const createNormal = (session, newRecord) => {
+    return new Promise(async (resolve, reject) => {
+        if (!newRecord) {
+            return reject(new Error(' is undefined'));
+        }
+        const { studentID } = newRecord;
+        try {
+            const createRecord = await Record.create({
+                sessionID: session,
+                studentID,
+            })
+            if (!createRecord) {
+                resolve({
+                    status: 'OK',
+                    message: 'SUCCESS',
+                    data: createRecord
+                });
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: createRecord
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
+
 module.exports = {
     createRecord,
-    getAllRecord
+    getAllRecord,
+    createNormal
 }
