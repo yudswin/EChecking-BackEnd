@@ -119,7 +119,29 @@ const getCourseName = (id) => {
             reject(e)
         }
     })
+}
 
+const deleteCourse = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const course = await Course.findByIdAndDelete({
+                _id: id
+            })
+            if (course === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The course is not defined'
+                })
+            }
+            resolve({
+                status: 'OK',
+                message: 'SUCCESS',
+                data: course
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
 }
 
 
@@ -128,5 +150,6 @@ module.exports = {
     getDetails,
     getAllCourse,
     updateCourse,
-    getCourseName
+    getCourseName,
+    deleteCourse
 }

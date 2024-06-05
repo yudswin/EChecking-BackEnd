@@ -10,6 +10,6 @@ router.get('/getAll/:lecturerId', authLecturerMiddleWare,  courseController.getA
 router.get('/getDetails/:courseId', authLecturerMiddleWare, courseController.getDetails) 
 router.put('/update/:courseId', authLecturerMiddleWare, courseController.updateCourse) 
 router.get('/getCourseName/:courseId', courseController.getCourseName)
-// router.delete('/:id', courseController.deleteCourse)
+router.delete('/:id',authLecturerMiddleWare, courseController.deleteCourse)
 
 module.exports = router
