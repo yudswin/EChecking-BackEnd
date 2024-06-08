@@ -89,11 +89,34 @@ const getTotalRecord = async (req, res) => {
     }
 }
 
+const getTotalDistinctRecord = async (req, res) => {
+    try {
+        const sessionID = req.params.sessionId;
+
+        if (!sessionID) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'The session ID is required'
+            });
+        }
+
+        const response = await RecordService.getTotalDistinctRecord(sessionID);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        });
+    
+    }
+
+}
+
 
 
 module.exports = {
     createRecord,
     getAllRecord,
     createNormal,
-    getTotalRecord
+    getTotalRecord,
+    getTotalDistinctRecord
 }

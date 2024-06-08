@@ -8,6 +8,7 @@ router.post('/create/:sessionId', upload.array('submissionPath[]'), multerErrorH
 router.get('/getAll/:sessionId', recordController.getAllRecord)
 router.post('/createNormal/:sessionId', recordController.createNormal)
 router.get('/total/:sessionId', recordController.getTotalRecord)
+router.get('/totalDistinct/:sessionId', recordController.getTotalDistinctRecord)
 
 
 
