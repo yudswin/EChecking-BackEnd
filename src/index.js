@@ -5,8 +5,7 @@ const routes = require('./routes');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const path =require('path')
- 
+const path = require('path')
 
 dotenv.config()
 
@@ -35,13 +34,13 @@ const port = process.env.PORT || 3001
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log('Connect Db success!')
-//        console.log(absolutePath)
+        //        console.log(absolutePath)
     })
     .catch((err) => {
         console.log(err)
-})
+    })
 
-    
+
 app.listen(port, () => {
     console.log('Server is running in port: ', + port)
 })
