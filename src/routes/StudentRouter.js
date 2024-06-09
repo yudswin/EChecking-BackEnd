@@ -9,7 +9,7 @@ router.post('/signin', StudentController.loginStudent) //  login of Student
 router.put('/update/:id', authUserMiddleWare, StudentController.updateStudent)
 router.post('/logout', StudentController.logoutStudent);
 router.post('/create', StudentController.createStudent);
-router.post('/refresh-token',  StudentController.refreshToken)
+router.post('/refreshToken',  StudentController.refreshToken)
 router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
 router.get('/getAll', StudentController.getAllStudents) 
 
