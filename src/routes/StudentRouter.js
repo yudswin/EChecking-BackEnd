@@ -12,5 +12,6 @@ router.post('/create', StudentController.createStudent);
 router.post('/refreshToken',  StudentController.refreshToken)
 router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
 router.get('/getAll', StudentController.getAllStudents) 
+router.post('/forgotPassword', StudentController.forgotPassword) 
 
 module.exports = router

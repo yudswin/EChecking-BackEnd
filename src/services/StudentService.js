@@ -1,4 +1,6 @@
 const Student = require("../models/StudentModel")
+const nodemailer = require("nodemailer");
+const OTP = require("../models/OTPModel")
 // const User = require("../models/StudentModel.js")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
@@ -160,13 +162,103 @@ const getAllStudents = () => {
         }
     })
 }
-
-
+const findStudentByEmail = (email) => {
+    return new Promise(async (resolve, reject) => {
+    try {
+        const student = await Student.findOne({ email: email });
+        if(student === null){
+            resolve({
+                status: "Error",
+                message: "The student is not defined"
+            })
+        }
+        else{
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: student
+            })
+        }
+    } catch (error) {
+        reject(error)
+    }
+    })
+}
+function generateRandomString(length) {
+    const characters = '0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+const sendOTP = (email) => {
+return new Promise(async (resolve, reject) => {
+    const otpCode = generateRandomString(4)
+    console.log(otpCode)
+    try {
+        const createdOTP = await OTP.create({
+          otp: otpCode,
+          email
+        })
+        if(createdOTP){
+            const info = await transporter.sendMail(mailOption,function(err,info)   {
+                if(err){
+                    console.log(err)
+                }
+                else{
+                    console.log("Email sent:" +info.response)
+                }
+            })
+            if(info){
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: info
+                })
+            }
+            else{
+                resolve({
+                    status: "Error",
+                    message: "The OTP is not created"
+                })
+            }
+               
+        }
+        else{
+            resolve({
+                status: "Error",
+                message: "The OTP is not created"
+            })
+        }
+    } catch (error) {
+        reject(error)
+    }
+})
+}
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+const mailOption = {
+    from: process.env.EMAIL, // sender address
+    to: "nqd5758@gmail.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+};
 
 module.exports = {
     createStudent,
     loginStudent,
     updateStudent,
     getDetails,
-    getAllStudents
+    getAllStudents,
+    findStudentByEmail,
+    sendOTP,
+    generateRandomString,
+  
 }

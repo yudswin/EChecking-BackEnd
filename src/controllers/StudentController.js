@@ -143,7 +143,27 @@ const getAllStudents = async (req, res) => {
         })
     }
 }
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Email is required'
+            });
+        }
 
+        const student = await StudentService.findStudentByEmail(email);
+        const response = await StudentService.sendOTP(email);
+        
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            status: 'ERR',
+            message: error.message
+        });
+    }
+}
 
 module.exports = {
     createStudent, 
@@ -152,5 +172,6 @@ module.exports = {
     refreshToken,
     logoutStudent,
     getDetails,
-    getAllStudents
+    getAllStudents,
+    forgotPassword
 }
