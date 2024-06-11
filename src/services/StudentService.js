@@ -70,6 +70,7 @@ const loginStudent = (StudentLogin) => {
             }
             const accessToken = await generalAccessToken({
                 id: checkStudent.id,
+                role: 'student'
             })
 
             const refreshToken = await generalRefreshToken({ // when access token is expired => provide the new access_token
