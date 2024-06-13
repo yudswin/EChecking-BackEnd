@@ -1,9 +1,11 @@
+
+
 const Lecturer = require("../models/LecturerModel")
 const User = require("../models/StudentModel.js")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
-
-
+const nodemailer = require("nodemailer");
+const OTP = require("../models/OTPModel");
 
 
 const createLecturer = (newLecturer) => {
@@ -70,6 +72,7 @@ const loginLecturer = (LecturerLogin) => {
             }
             const accessToken = await generalAccessToken({
                 id: checkLecturer.id,
+                role: 'lecturer'
             })
 
             const refreshToken = await generalRefreshToken({ // when access token is expired => provide the new access_token
@@ -141,12 +144,152 @@ const getDetails = (id) => {
         }
     })
 }
+const findLecturerByEmail = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const lecturer = await Lecturer.findOne({ email: email });
+            if (lecturer === null) {
+                resolve({
+                    status: "Error",
+                    message: "The lecturer is not defined",
+                });
+            } else {
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: student,
+                });
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+function generateRandomString(length) {
+    const characters = "0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+const sendOTP = (email) => {
+    return new Promise(async (resolve, reject) => {
+        const otpCode = generateRandomString(4);
+        console.log("Generated OTP:", otpCode);
+        try {
+            const createdOTP = await OTP.create({
+                otp: otpCode,
+                email,
+            });
+            if (createdOTP) {
+                const mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: "Reset Password",
+                    html: `<p>
+            Your OTP code is: ${otpCode}
+            <p">This link will expire in 10 minutes.</p>`,
+                };
+                const info = await transporter.sendMail(
+                    mailOptions,
+                    function (err, info) {
+                        if (err) {
+                            console.log(err);
+                            reject({
+                                status: "Error",
+                                message: "Failed to send email",
+                                error: err,
+                            });
+                        } else {
+                            console.log("Email sent:" + info.response);
+                            resolve({
+                                status: "OK",
+                                message: "SUCCESS",
+                                data: info,
+                            });
+                        }
+                    }
+                );
+            } else {
+                resolve({
+                    status: "Error",
+                    message: "The OTP is not created",
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            reject({
+                status: "Error",
+                message: "Error in OTP creation or email sending",
+                error: error,
+            });
+        }
+    });
+};
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    secure: false,
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+    },
+});
 
+const changePassword = async (email, otp, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const otpRecord = await OTP.findOne({ otp: otp });
+            if (!otpRecord) {
+                resolve({
+                    status: "Error",
+                    message: "Invalid OTP or OTP has expired",
+                    data: otpRecord
+                });
+                return;
+            }
+
+            const hashedPassword = bcrypt.hashSync(newPassword, 10);
+            const updatedLecturer = await Lecturer.findOneAndUpdate(
+                { email: email },
+                { password: hashedPassword },
+                { new: true }
+            );
+            if (!updatedLecturer) {
+                resolve({
+                    status: "Error",
+                    message: "Lecturer not found",
+                });
+                return;
+            }
+            await OTP.deleteOne({ email: email, otp: otp });
+
+            resolve({
+                status: "OK",
+                message: "Password updated successfully",
+                data: updatedLecturer,
+            });
+        } catch (error) {
+            reject({
+                status: "Error",
+                message: "Failed to update password",
+                error: error,
+            });
+        }
+    }).catch((error) => {
+        console.error("Error in changePassword:", error);
+        // Additional error handling or logging here
+    });
+};
 
 
 module.exports = {
     createLecturer,
     loginLecturer,
     updateLecturer,
-    getDetails
+    getDetails,
+    sendOTP,
+    changePassword,
+    generateRandomString,
+    findLecturerByEmail
 };

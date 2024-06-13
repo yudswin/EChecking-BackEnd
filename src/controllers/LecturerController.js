@@ -91,7 +91,7 @@ const refreshToken = async (req, res) =>{
             })
         }
 
-        const response = await JwtService.refreshTokenJwtService(refreshToken)
+        const response = await JwtService.refreshTokenJwtService(refreshToken, 'lecturer')
         return res.status(200).json(response)
     }catch(error){
         return res.status(404).json({
@@ -132,7 +132,55 @@ const getDetails = async (req, res) => {
         })
     }
 }
-
+const forgotPassword = async (req, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({
+          status: "ERR",
+          message: "Email is required",
+        });
+      }
+  
+      const lecturer = await LecturerService.findLecturerByEmail(email);
+      const response = await LecturerService.sendOTP(email);
+  
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(500).json({
+        status: "ERR",
+        message: error.message,
+      });
+    }
+  };
+  const verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "Email and OTP are required.",
+      });
+    }
+    else{
+      return res.status(200).json({
+        status: "OK",
+        message: "OTP is verified.",
+      });
+    }
+  };
+  const changePassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "Email, OTP and new password are required.",
+      });
+    }
+    else{
+      const response = await LecturerService.changePassword(email, otp, newPassword);
+      return res.status(200).json(response);
+    }
+  }
 
 module.exports = {
     createLecturer, 
@@ -140,6 +188,9 @@ module.exports = {
     updateLecturer,
     refreshToken,
     logoutLecturer,
-    getDetails
+    getDetails,
+    forgotPassword,
+    verifyOtp,
+    changePassword
 
 }
