@@ -1,7 +1,6 @@
 
 
 const Lecturer = require("../models/LecturerModel")
-const User = require("../models/StudentModel.js")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 const nodemailer = require("nodemailer");

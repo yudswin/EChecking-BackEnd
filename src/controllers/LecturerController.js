@@ -24,7 +24,7 @@ const createLecturer = async (req, res) => {
                 message: 'The password is equal confirmPassword'
             })
         }
-    //    console.log(req.body)
+        //    console.log(req.body)
         const response = await LecturerService.createLecturer(req.body)
         return res.status(200).json(response)
     } catch (e) {
@@ -34,10 +34,10 @@ const createLecturer = async (req, res) => {
     }
 }
 
-const loginLecturer = async (req, res) =>{
-    try{
+const loginLecturer = async (req, res) => {
+    try {
         const { lecturerID, lecturerPassword } = req.body
-     //   console.log(req.body)
+        //   console.log(req.body)
         if (!lecturerPassword) {
             return res.status(200).json({
                 status: 'ERR',
@@ -52,19 +52,19 @@ const loginLecturer = async (req, res) =>{
 
         const response = await LecturerService.loginLecturer(req.body)
         return res.status(200).json(response)
-    }catch(error){
+    } catch (error) {
         return res.status(404).json({
             mgs: error
         })
     }
-} 
+}
 
 
-const updateLecturer = async (req, res) =>{
-    try{
+const updateLecturer = async (req, res) => {
+    try {
         const LecturerId = req.params.id
         const data = req.body
-        if(!LecturerId){
+        if (!LecturerId) {
             return res.status(200).json({
                 status: "ERROR",
                 msg: "The LecturerId is required"
@@ -73,18 +73,18 @@ const updateLecturer = async (req, res) =>{
 
         const response = await LecturerService.updateLecturer(LecturerId, data)
         return res.status(200).json(response)
-    }catch(error){
+    } catch (error) {
         return res.status(404).json({
             mgs: error
         })
     }
-} 
+}
 
 
-const refreshToken = async (req, res) =>{
-    try{
+const refreshToken = async (req, res) => {
+    try {
         const refreshToken = req.headers.token.split(' ')[1]       // create Beare in Headers of Postman  (put the refresh token to headers  => verify refresh token => ))
-        if(!refreshToken){
+        if (!refreshToken) {
             return res.status(200).json({
                 status: "ERROR",
                 msg: "The refresh token is required"
@@ -93,12 +93,12 @@ const refreshToken = async (req, res) =>{
 
         const response = await JwtService.refreshTokenJwtService(refreshToken, 'lecturer')
         return res.status(200).json(response)
-    }catch(error){
+    } catch (error) {
         return res.status(404).json({
             mgs: error
         })
     }
-} 
+}
 
 
 const logoutLecturer = async (req, res) => {
@@ -134,57 +134,57 @@ const getDetails = async (req, res) => {
 }
 const forgotPassword = async (req, res) => {
     try {
-      const { email } = req.body;
-      if (!email) {
-        return res.status(400).json({
-          status: "ERR",
-          message: "Email is required",
-        });
-      }
-  
-      const lecturer = await LecturerService.findLecturerByEmail(email);
-      const response = await LecturerService.sendOTP(email);
-  
-      return res.status(200).json(response);
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Email is required",
+            });
+        }
+
+        const lecturer = await LecturerService.findLecturerByEmail(email);
+        const response = await LecturerService.sendOTP(email);
+
+        return res.status(200).json(response);
     } catch (error) {
-      return res.status(500).json({
-        status: "ERR",
-        message: error.message,
-      });
+        return res.status(500).json({
+            status: "ERR",
+            message: error.message,
+        });
     }
-  };
-  const verifyOtp = async (req, res) => {
+};
+const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
-      return res.status(400).json({
-        status: "ERR",
-        message: "Email and OTP are required.",
-      });
+        return res.status(400).json({
+            status: "ERR",
+            message: "Email and OTP are required.",
+        });
     }
-    else{
-      return res.status(200).json({
-        status: "OK",
-        message: "OTP is verified.",
-      });
+    else {
+        return res.status(200).json({
+            status: "OK",
+            message: "OTP is verified.",
+        });
     }
-  };
-  const changePassword = async (req, res) => {
+};
+const changePassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
     if (!email || !otp || !newPassword) {
-      return res.status(400).json({
-        status: "ERR",
-        message: "Email, OTP and new password are required.",
-      });
+        return res.status(400).json({
+            status: "ERR",
+            message: "Email, OTP and new password are required.",
+        });
     }
-    else{
-      const response = await LecturerService.changePassword(email, otp, newPassword);
-      return res.status(200).json(response);
+    else {
+        const response = await LecturerService.changePassword(email, otp, newPassword);
+        return res.status(200).json(response);
     }
-  }
+}
 
 module.exports = {
-    createLecturer, 
-    loginLecturer, 
+    createLecturer,
+    loginLecturer,
     updateLecturer,
     refreshToken,
     logoutLecturer,
