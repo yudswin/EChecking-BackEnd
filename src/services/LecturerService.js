@@ -157,7 +157,7 @@ const findLecturerByEmail = (email) => {
                 resolve({
                     status: "OK",
                     message: "SUCCESS",
-                    data: student,
+                    data: lecturer,
                 });
             }
         } catch (error) {
