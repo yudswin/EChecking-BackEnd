@@ -188,11 +188,11 @@ const sendOTP = (email) => {
                     subject: "Reset Password",
                     html: `
             <div style="width: full; height: full; padding: 40px; background: rgba(24, 20, 20, 0.987); color: #fff; border-radius: 10px; margin: 0 auto; text-align: center;">
-              <h2 style="color: #fff;">Reset Your Password</h2>
-              <p style="color: #fff;">Your OTP code is: <strong>${otpCode}</strong>.This code will expire in 10 minutes.If you did not request this, please ignore this email.</p>
+              <h2 style="color: #fff;">Reset Your Lecturer Password</h2>
+              <p style="color: #fff;">Your OTP code is: <strong>${otpCode}</strong>. This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
             </div>
           `,
-        };
+                };
                 const info = await transporter.sendMail(
                     mailOptions,
                     function (err, info) {

@@ -192,61 +192,61 @@ function generateRandomString(length) {
     return result;
 }
 const sendOTP = (email) => {
-  return new Promise(async (resolve, reject) => {
-    const otpCode = generateRandomString(4);
-    console.log("Generated OTP:", otpCode);
-    try {
-      const createdOTP = await OTP.create({
-        otp: otpCode,
-        email,
-      });
-      if (createdOTP) {
-        const mailOptions = {
-          from: process.env.EMAIL,
-          to: email,
-          subject: "Reset Password",
-          html: `
+    return new Promise(async (resolve, reject) => {
+        const otpCode = generateRandomString(4);
+        console.log("Generated OTP:", otpCode);
+        try {
+            const createdOTP = await OTP.create({
+                otp: otpCode,
+                email,
+            });
+            if (createdOTP) {
+                const mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: "Reset Password",
+                    html: `
             <div style="width: full; height: full; padding: 40px; background: rgba(24, 20, 20, 0.987); color: #fff; border-radius: 10px; margin: 0 auto; text-align: center;">
-              <h2 style="color: #fff;">Reset Your Password</h2>
+              <h2 style="color: #fff;">Reset Your Student Password</h2>
               <p style="color: #fff;">Your OTP code is: <strong>${otpCode}</strong>. This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
             </div>
           `,
-        };
-        const info = await transporter.sendMail(
-          mailOptions,
-          function (err, info) {
-            if (err) {
-              console.log(err);
-              reject({
-                status: "Error",
-                message: "Failed to send email",
-                error: err,
-              });
+                };
+                const info = await transporter.sendMail(
+                    mailOptions,
+                    function (err, info) {
+                        if (err) {
+                            console.log(err);
+                            reject({
+                                status: "Error",
+                                message: "Failed to send email",
+                                error: err,
+                            });
+                        } else {
+                            console.log("Email sent:" + info.response);
+                            resolve({
+                                status: "OK",
+                                message: "SUCCESS",
+                                data: info,
+                            });
+                        }
+                    }
+                );
             } else {
-              console.log("Email sent:" + info.response);
-              resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: info,
-              });
+                resolve({
+                    status: "Error",
+                    message: "The OTP is not created",
+                });
             }
-          }
-        );
-      } else {
-        resolve({
-          status: "Error",
-          message: "The OTP is not created",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      reject({
-        status: "Error",
-        message: "Error in OTP creation or email sending",
-        error: error,
-      });
-    }
-  });
+        } catch (error) {
+            console.log(error);
+            reject({
+                status: "Error",
+                message: "Error in OTP creation or email sending",
+                error: error,
+            });
+        }
+    });
 };
 const transporter = nodemailer.createTransport({
     service: "gmail",
