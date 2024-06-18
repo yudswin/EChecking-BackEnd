@@ -1,7 +1,7 @@
 const Lecturer = require('../models/LecturerModel')
 const LecturerService = require('../services/LecturerService')
 const JwtService = require('../services/JwtService')
-
+const mongoose = require('mongoose');
 
 const createLecturer = async (req, res) => {
     try {
@@ -60,26 +60,31 @@ const loginLecturer = async (req, res) =>{
 } 
 
 
-const updateLecturer = async (req, res) =>{
-    try{
-        const LecturerId = req.params.id
-        const data = req.body
-        if(!LecturerId){
-            return res.status(200).json({
+const updateLecturer = async (req, res) => {
+    try {
+        const { lecturerID, ...updateData } = req.body;
+        if (!lecturerID) {
+            return res.status(400).json({
                 status: "ERROR",
-                msg: "The LecturerId is required"
-            })
+                message: "Lecturer ID is required"
+            });
         }
-
-        const response = await LecturerService.updateLecturer(LecturerId, data)
-        return res.status(200).json(response)
-    }catch(error){
-        return res.status(404).json({
-            mgs: error
-        })
+        const lecturer = await Lecturer.findOne({ lecturerID });
+        if (!lecturer) {
+            return res.status(404).json({
+                status: "ERROR",
+                message: "Lecturer not found"
+            });
+        }
+        const result = await LecturerService.updateLecturer(lecturer._id, updateData);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({
+            status: "ERROR",
+            message: error.message
+        });
     }
-} 
-
+};
 
 const refreshToken = async (req, res) =>{
     try{
@@ -159,34 +164,60 @@ const forgotPassword = async (req, res) => {
       });
     }
   };
+//   const verifyOtp = async (req, res) => {
+//     const {otp } = req.body;
+//     if (!otp) {
+//         return res.status(400).json({
+//             status: "ERR",
+//             message: "OTP are required.",
+//         });
+//     }
+//     return res.status(200).json({
+//         status: "OK",
+//         message: "OTP is verified.",
+//     });
+// };
+const changePassword = async (req, res) => {
+    const { email, otp, newPassword, confirmPassword } = req.body;
+    if (!email || !otp || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "Email, OTP, new password, and confirm password are required.",
+      });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "New password and confirm password do not match.",
+      });
+    }
+    if (newPassword.length < 4) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "New password must be at least 4 characters long.",
+      });
+    }
   
-  const verifyOtp = async (req, res) => {
-    const { email, otp } = req.body;
-    if (!email || !otp) {
+    // Find the lecturer by email to ensure they exist
+    const lecturer = await Lecturer.findOne({ email: email });
+    if (!lecturer) {
+      return res.status(404).json({
+        status: "ERR",
+        message: "No lecturer found with this email.",
+      });
+    }
+  
+    // Verify the OTP
+    const isValidOtp = await LecturerService.verifyOtp(email, otp);
+    if (!isValidOtp) {
       return res.status(400).json({
         status: "ERR",
-        message: "Email and OTP are required.",
+        message: "Invalid OTP.",
       });
     }
-    else{
-      return res.status(200).json({
-        status: "OK",
-        message: "OTP is verified.",
-      });
-    }
-  };
-  const changePassword = async (req, res) => {
-    const { email, otp, newPassword } = req.body;
-    if (!email || !otp || !newPassword) {
-      return res.status(400).json({
-        status: "ERR",
-        message: "Email, OTP and new password are required.",
-      });
-    }
-    else{
-      const response = await LecturerService.changePassword(email, otp, newPassword);
-      return res.status(200).json(response);
-    }
+  
+    const response = await LecturerService.changePassword(email, otp, newPassword);
+    return res.status(200).json(response);
   }
 
 module.exports = {
@@ -197,7 +228,7 @@ module.exports = {
     logoutLecturer,
     getDetails,
     forgotPassword,
-    verifyOtp,
+    // verifyOtp,
     changePassword
 
 }
