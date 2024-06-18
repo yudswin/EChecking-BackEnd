@@ -158,8 +158,14 @@ const forgotPassword = async (req, res) => {
     }
 
     const student = await StudentService.findStudentByEmail(email);
-    const response = await StudentService.sendOTP(email);
+    if (!student || student.status === "Error") {
+      return res.status(400).json({
+        status: "ERR",
+        message: "No student found with this email.",
+      });
+    }
 
+    const response = await StudentService.sendOTP(email);
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({
