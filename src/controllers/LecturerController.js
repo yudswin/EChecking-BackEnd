@@ -143,6 +143,12 @@ const forgotPassword = async (req, res) => {
       }
   
       const lecturer = await LecturerService.findLecturerByEmail(email);
+      if(!lecturer || lecturer.status === "Error"){
+        return res.status(400).json({
+          status: "ERR",
+          message: "Email is not found.",
+        });
+      }
       const response = await LecturerService.sendOTP(email);
   
       return res.status(200).json(response);
@@ -153,6 +159,7 @@ const forgotPassword = async (req, res) => {
       });
     }
   };
+  
   const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
