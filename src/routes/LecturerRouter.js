@@ -15,7 +15,7 @@ router.post('/refreshToken',  lecturerController.refreshToken)
 router.get('/getDetails/:id', authLecturerMiddleWare, lecturerController.getDetails)    // get one lecturer
 // router.get('/Get-Lecturer-Name/:id', lecturerController.getLecturerName)    // get one lecturer
 router.post('/forgotPassword', lecturerController.forgotPassword) 
-router.post('/verifyOtp', lecturerController.verifyOtp); 
+// router.post('/verifyOtp', lecturerController.verifyOtp); 
 router.post('/changePassword', lecturerController.changePassword); 
 
 module.exports = router
