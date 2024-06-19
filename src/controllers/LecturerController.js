@@ -164,19 +164,26 @@ const forgotPassword = async (req, res) => {
       });
     }
   };
-//   const verifyOtp = async (req, res) => {
-//     const {otp } = req.body;
-//     if (!otp) {
-//         return res.status(400).json({
-//             status: "ERR",
-//             message: "OTP are required.",
-//         });
-//     }
-//     return res.status(200).json({
-//         status: "OK",
-//         message: "OTP is verified.",
-//     });
-// };
+  const verifyOtp = async (req, res) => {
+    const {email,otp } = req.body;
+    const checkOtp = await LecturerService.verifyOtp(email, otp);
+    if(!checkOtp){
+        return res.status(400).json({
+            status: "ERR",
+            message: "Invalid OTP.",
+        });
+    }
+    if (!otp) {
+        return res.status(400).json({
+            status: "ERR",
+            message: "OTP are required.",
+        });
+    }
+    return res.status(200).json({
+        status: "OK",
+        message: "OTP is verified.",
+    });
+};
 const changePassword = async (req, res) => {
     const { email, otp, newPassword, confirmPassword } = req.body;
     if (!email || !otp || !newPassword || !confirmPassword) {
@@ -228,7 +235,7 @@ module.exports = {
     logoutLecturer,
     getDetails,
     forgotPassword,
-    // verifyOtp,
+    verifyOtp,
     changePassword
 
 }
