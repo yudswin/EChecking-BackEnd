@@ -1,7 +1,7 @@
 const Student = require("../models/StudentModel");
 const StudentService = require("../services/StudentService");
 const JwtService = require("../services/JwtService");
-
+const mongoose = require('mongoose');
 const createStudent = async (req, res) => {
   try {
     const {
@@ -68,10 +68,27 @@ const loginStudent = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   try {
+    // Verify the access token
+    const accessToken = req.headers.authorization?.split(" ")[1]; 
+    if (!accessToken) {
+      return res.status(401).json({
+        status: "ERROR",
+        msg: "Access token is required",
+      });
+    }
+
+    const verified = await JwtService.verifyAccessToken(accessToken);
+    if (!verified) {
+      return res.status(403).json({
+        status: "ERROR",
+        msg: "Invalid or expired access token",
+      });
+    }
+
     const StudentId = req.params.id;
     const data = req.body;
     if (!StudentId) {
-      return res.status(200).json({
+      return res.status(400).json({
         status: "ERROR",
         msg: "The studentID is required",
       });
@@ -81,7 +98,7 @@ const updateStudent = async (req, res) => {
     return res.status(200).json(response);
   } catch (error) {
     return res.status(404).json({
-      mgs: error,
+      msg: error.message,
     });
   }
 };
@@ -175,27 +192,55 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
-const verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
-  if (!email || !otp) {
-    return res.status(400).json({
-      status: "ERR",
-      message: "Email and OTP are required.",
-    });
-  }
-  else{
-    return res.status(200).json({
-      status: "OK",
-      message: "OTP is verified.",
-    });
-  }
-};
+// const verifyOtp = async (req, res) => {
+//   const { email, otp } = req.body;
+//   if (!email || !otp) {
+//     return res.status(400).json({
+//       status: "ERR",
+//       message: "Email and OTP are required.",
+//     });
+//   }
+//   else{
+//     return res.status(200).json({
+//       status: "OK",
+//       message: "OTP is verified.",
+//     });
+//   }
+// };
 const changePassword = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-  if (!email || !otp || !newPassword) {
+  const { email, otp, newPassword, confirmPassword } = req.body;
+  if (!email || !otp || !newPassword || !confirmPassword) {
     return res.status(400).json({
       status: "ERR",
-      message: "Email, OTP and new password are required.",
+      message: "Email, OTP, new password and confirm password are required.",
+    });
+  }
+  if(newPassword !== confirmPassword){
+    return res.status(400).json({
+      status: "ERR",
+      message: "New password and confirm password are not equal.",
+    });
+  }
+  if(newPassword.length < 4){
+    return res.status(400).json({
+      status: "ERR",
+      message: "New password must be at least 4 characters long.",
+    });
+  }
+  // Find the student by email to ensure they exist
+  const student = await Student.findOne({ email: email });
+  if (!student) {
+    return res.status(404).json({
+      status: "ERR",
+      message: "No student found with this email.",
+    });
+  }
+  // Verify the OTP
+  const isValidOtp = await StudentService.verifyOtp(email, otp);
+  if (!isValidOtp) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "Invalid OTP.",
     });
   }
   else{
@@ -203,6 +248,8 @@ const changePassword = async (req, res) => {
     return res.status(200).json(response);
   }
 }
+
+
 module.exports = {
   createStudent,
   loginStudent,
@@ -212,6 +259,5 @@ module.exports = {
   getDetails,
   getAllStudents,
   forgotPassword,
-  verifyOtp,
   changePassword,
 };

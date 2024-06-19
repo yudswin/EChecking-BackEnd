@@ -1,11 +1,9 @@
-
-
 const Lecturer = require("../models/LecturerModel")
 const bcrypt = require("bcrypt")
 const { generalAccessToken, generalRefreshToken } = require("./JwtService.js")
 const nodemailer = require("nodemailer");
 const OTP = require("../models/OTPModel");
-
+const mongoose = require('mongoose'); // Add this line at the top if not already present
 
 const createLecturer = (newLecturer) => {
     return new Promise(async (resolve, reject) => {
@@ -91,57 +89,85 @@ const loginLecturer = (LecturerLogin) => {
         }
     })
 }
+const updateLecturer = async (id, updateData) => {
+    return await Lecturer.findByIdAndUpdate(id, updateData, { new: true });
+};
+// const updateLecturer = (id, data) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             if (!mongoose.Types.ObjectId.isValid(id)) {
+//                 resolve({
+//                     status: "Error",
+//                     message: "Invalid ID format"
+//                 });
+//                 return;
+//             }
+//             const checkLecturer = await Lecturer.findOne({
+//                 _id: id
+//             });
 
-const updateLecturer = (id, data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const checkLecturer = await Lecturer.findOne({
-                _id: id
-            })
+//             if (checkLecturer === null) {
+//                 resolve({
+//                     status: "Error",
+//                     message: "The lecturer is not defined"
+//                 });
+//                 return;
+//             }
+            
+//             const updatedLecturer = await Lecturer.findByIdAndUpdate(id, data, { new: true });
+//             if (!updatedLecturer) {
+//                 resolve({
+//                     status: "Error",
+//                     message: "Update failed"
+//                 });
+//                 return;
+//             }
 
-            if (checkLecturer === null) {
-                resolve({
-                    status: "Error",
-                    mgs: "The lecturer is not defined"
-                })
-            }
+//             resolve({
+//                 status: "OK",
+//                 message: "SUCCESS",
+//                 data: updatedLecturer
+//             });
 
-            const updatedLecturer = await Lecturer.findByIdAndUpdate(id, data, { new: true })
-            resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: updatedLecturer
-            })
-
-        } catch (e) {
-            reject(e);
-        }
-    })
-}
+//         } catch (e) {
+//             reject(e);
+//         }
+//     });
+// }
 
 const getDetails = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                resolve({
+                    status: "Error",
+                    message: "Invalid ID format"
+                });
+                return;
+            }
+
             const checkLecturer = await Lecturer.findOne({
                 _id: id
-            })
+            });
 
             if (checkLecturer === null) {
                 resolve({
                     status: "Error",
-                    mgs: "The lecturer is not defined"
-                })
+                    message: "The lecturer is not defined"
+                });
+                return;
             }
+
             resolve({
                 status: "OK",
                 message: "SUCCESS",
                 data: checkLecturer
-            })
+            });
 
         } catch (e) {
             reject(e);
         }
-    })
+    });
 }
 const findLecturerByEmail = (email) => {
     return new Promise(async (resolve, reject) => {
@@ -283,8 +309,22 @@ const changePassword = async (email, otp, newPassword) => {
         // Additional error handling or logging here
     });
 };
+const verifyOtp = async (email, otp) => {
+    const otpRecord = await OTP.findOne({ email: email, otp: otp });
+    if (!otpRecord) {
+        return false; // OTP not found or does not match
+    }
+    const currentTime = new Date();
+    const otpTime = new Date(otpRecord.createdAt);
+    const timeDifference = (currentTime - otpTime) / 60000; // difference in minutes
 
+    if (timeDifference > 10) { // OTP is valid for 10 minutes
+        await OTP.deleteOne({ _id: otpRecord._id }); // Delete expired OTP
+        return false; // OTP has expired
+    }
 
+    return true; // OTP is valid
+};
 module.exports = {
     createLecturer,
     loginLecturer,
@@ -293,5 +333,6 @@ module.exports = {
     sendOTP,
     changePassword,
     generateRandomString,
-    findLecturerByEmail
+    findLecturerByEmail,
+    verifyOtp
 };
