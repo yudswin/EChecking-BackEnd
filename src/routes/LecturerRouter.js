@@ -18,5 +18,6 @@ router.get('/getDetails/:id', authLecturerMiddleWare, lecturerController.getDeta
 router.post('/forgotPassword', lecturerController.forgotPassword) 
 router.post('/verifyOtp', lecturerController.verifyOtp); 
 router.post('/changePassword', lecturerController.changePassword); 
+router.post('/verifyEmail', lecturerController.verifyEmail)
 
 module.exports = router

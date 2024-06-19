@@ -226,7 +226,31 @@ const changePassword = async (req, res) => {
     const response = await LecturerService.changePassword(email, otp, newPassword);
     return res.status(200).json(response);
   }
-
+const verifyEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Email is required",
+            });
+        }
+        const checkLecturer = await LecturerService.findLecturerByEmail(email);
+        if (!checkLecturer) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Lecturer already exists",
+            });
+        }
+        const response = await LecturerService.sendOTP(email);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            status: "ERR",
+            message: error.message,
+        });
+    }
+}
 module.exports = {
     createLecturer, 
     loginLecturer, 
@@ -236,6 +260,7 @@ module.exports = {
     getDetails,
     forgotPassword,
     verifyOtp,
-    changePassword
+    changePassword,
+    verifyEmail
 
 }
