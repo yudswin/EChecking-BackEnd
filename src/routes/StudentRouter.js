@@ -14,7 +14,8 @@ router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
 router.get('/getDetailsLecturer/:id', authLecturerMiddleWare, StudentController.getDetails)
 router.get('/getAll', StudentController.getAllStudents) 
 router.post('/forgotPassword', StudentController.forgotPassword) 
-// router.post('/verifyOtp', StudentController.verifyOtp); 
+router.post('/verifyOtp', StudentController.verifyOtp); 
 router.post('/changePassword', StudentController.changePassword); 
+router.post('/verifyEmail', StudentController.verifyEmail)
 
 module.exports = router

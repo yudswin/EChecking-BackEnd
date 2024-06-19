@@ -164,19 +164,26 @@ const forgotPassword = async (req, res) => {
         });
     }
   };
-//   const verifyOtp = async (req, res) => {
-//     const {otp } = req.body;
-//     if (!otp) {
-//         return res.status(400).json({
-//             status: "ERR",
-//             message: "OTP are required.",
-//         });
-//     }
-//     return res.status(200).json({
-//         status: "OK",
-//         message: "OTP is verified.",
-//     });
-// };
+  const verifyOtp = async (req, res) => {
+    const {email,otp } = req.body;
+    const checkOtp = await LecturerService.verifyOtp(email, otp);
+    if(!checkOtp){
+        return res.status(400).json({
+            status: "ERR",
+            message: "Invalid OTP.",
+        });
+    }
+    if (!otp) {
+        return res.status(400).json({
+            status: "ERR",
+            message: "OTP are required.",
+        });
+    }
+    return res.status(200).json({
+        status: "OK",
+        message: "OTP is verified.",
+    });
+};
 const changePassword = async (req, res) => {
     const { email, otp, newPassword, confirmPassword } = req.body;
     if (!email || !otp || !newPassword || !confirmPassword) {
@@ -219,7 +226,31 @@ const changePassword = async (req, res) => {
     const response = await LecturerService.changePassword(email, otp, newPassword);
     return res.status(200).json(response);
   }
-
+const verifyEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Email is required",
+            });
+        }
+        const checkLecturer = await LecturerService.findLecturerByEmail(email);
+        if (!checkLecturer) {
+            return res.status(400).json({
+                status: "ERR",
+                message: "Lecturer already exists",
+            });
+        }
+        const response = await LecturerService.sendOTP(email);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({
+            status: "ERR",
+            message: error.message,
+        });
+    }
+}
 module.exports = {
     createLecturer,
     loginLecturer,
@@ -228,7 +259,8 @@ module.exports = {
     logoutLecturer,
     getDetails,
     forgotPassword,
-    // verifyOtp,
-    changePassword
+    verifyOtp,
+    changePassword,
+    verifyEmail
 
 }

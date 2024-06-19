@@ -5,19 +5,23 @@ dotenv.config();
 
 
 const authLecturerMiddleWare = (req, res, next) => {
-    const accessToken = req.headers['token'] ? req.headers['token'].split(' ')[1] : null;
-
-    if (!accessToken) {
-        return res.status(403).json({ message: "Access token is required" });
+    if (!req.headers.token) {
+        return res.status(401).json({
+            message: 'No token provided',
+            status: 'ERROR'
+        })
     }
-
-    jwt.verify(accessToken, process.env.ACCESS_TOKEN, (err, lecturerData) => {
+    const token = req.headers.token.split(' ')[1]
+    // const LecturerId = req.params.id
+    console.log('token', req.headers.token);
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, lecturer) {
         if (err) {
-            return res.status(401).json({ message: "Invalid or expired access token" });
+            return res.status(401).json({
+                message: 'Failed to authenticate token / accessToken expired',
+                status: 'ERROR'
+            })
         }
-        // Lưu trữ thông tin lecturer vào request để sử dụng ở các hàm xử lý sau
-        req.lecturer = lecturerData;
-        next();
+        next()
     });
 }
 const authUserMiddleWare = (req, res, next) => {

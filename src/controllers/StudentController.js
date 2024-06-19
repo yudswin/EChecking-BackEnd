@@ -1,7 +1,7 @@
 const Student = require("../models/StudentModel");
 const StudentService = require("../services/StudentService");
 const JwtService = require("../services/JwtService");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const createStudent = async (req, res) => {
   try {
     const {
@@ -69,7 +69,7 @@ const loginStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
   try {
     // Verify the access token
-    const accessToken = req.headers.authorization?.split(" ")[1]; 
+    const accessToken = req.headers.authorization?.split(" ")[1];
     if (!accessToken) {
       return res.status(401).json({
         status: "ERROR",
@@ -192,21 +192,26 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
-// const verifyOtp = async (req, res) => {
-//   const { email, otp } = req.body;
-//   if (!email || !otp) {
-//     return res.status(400).json({
-//       status: "ERR",
-//       message: "Email and OTP are required.",
-//     });
-//   }
-//   else{
-//     return res.status(200).json({
-//       status: "OK",
-//       message: "OTP is verified.",
-//     });
-//   }
-// };
+const verifyOtp = async (req, res) => {
+  const { otp } = req.body;
+  const checkOtp = await StudentService.verifyOtp(otp);
+  if (!checkOtp) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "Invalid OTP.",
+    });
+  }
+  if (!otp) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "OTP are required.",
+    });
+  }
+  return res.status(200).json({
+    status: "OK",
+    message: "OTP is verified.",
+  });
+};
 const changePassword = async (req, res) => {
   const { email, otp, newPassword, confirmPassword } = req.body;
   if (!email || !otp || !newPassword || !confirmPassword) {
@@ -215,18 +220,13 @@ const changePassword = async (req, res) => {
       message: "Email, OTP, new password and confirm password are required.",
     });
   }
-  if(newPassword !== confirmPassword){
+  if (newPassword !== confirmPassword) {
     return res.status(400).json({
       status: "ERR",
       message: "New password and confirm password are not equal.",
     });
   }
-  if(newPassword.length < 4){
-    return res.status(400).json({
-      status: "ERR",
-      message: "New password must be at least 4 characters long.",
-    });
-  }
+
   // Find the student by email to ensure they exist
   const student = await Student.findOne({ email: email });
   if (!student) {
@@ -234,22 +234,42 @@ const changePassword = async (req, res) => {
       status: "ERR",
       message: "No student found with this email.",
     });
-  }
-  // Verify the OTP
-  const isValidOtp = await StudentService.verifyOtp(email, otp);
-  if (!isValidOtp) {
-    return res.status(400).json({
-      status: "ERR",
-      message: "Invalid OTP.",
-    });
-  }
-  else{
-    const response = await StudentService.changePassword(email, otp, newPassword);
+  } else {
+    const response = await StudentService.changePassword(
+      email,
+      otp,
+      newPassword
+    );
     return res.status(200).json(response);
   }
-}
-
-
+};
+const verifyEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "Email is required",
+    });
+  }
+  const checkStudent = await StudentService.findStudentByEmail(email);
+  if (!checkStudent) {
+    return res.status(400).json({
+      status: "ERR",
+      message: "Student already exists",
+    });
+  }
+  const response = await StudentService.sendOTP(email);
+  return res.status(200).json(response);
+ 
+  } catch (error) {
+    return res.status(500).json({
+      status: "ERR",
+      message: error.message,
+    });
+  }
+};
+  
 module.exports = {
   createStudent,
   loginStudent,
@@ -260,4 +280,6 @@ module.exports = {
   getAllStudents,
   forgotPassword,
   changePassword,
+  verifyOtp,
+  verifyEmail,
 };

@@ -307,21 +307,21 @@ const changePassword = async (email, otp, newPassword) => {
         // Additional error handling or logging here
     });
 };
-const verifyOtp = async (email, otp) => {
-  const otpRecord = await OTP.findOne({ email: email, otp: otp });
+const verifyOtp = async (otp) => {
+  const otpRecord = await OTP.findOne({  otp: otp });
   if (!otpRecord) {
       return false; // OTP not found or does not match
   }
-  const currentTime = new Date();
-  const otpTime = new Date(otpRecord.createdAt);
-  const timeDifference = (currentTime - otpTime) / 60000; // difference in minutes
-
-  if (timeDifference > 10) { // OTP is valid for 10 minutes
-      await OTP.deleteOne({ _id: otpRecord._id }); // Delete expired OTP
-      return false; // OTP has expired
-  }
-
   return true; // OTP is valid
+};
+const existOTP = async (otp) => {
+  const otpRecord = await OTP.findOne({  otp: otp });
+  if (!otpRecord) {
+      return false; // OTP not found or does not match
+  }else{
+    await OTP.deleteOne({ _id: otpRecord._id }); // Delete expired OTP
+    return true; // OTP is valid
+  }
 };
 module.exports = {
   createStudent,
@@ -333,5 +333,6 @@ module.exports = {
   sendOTP,
   generateRandomString,
   changePassword,
-  verifyOtp
+  verifyOtp,
+  existOTP
 };
