@@ -11,7 +11,7 @@ router.post('/logout', StudentController.logoutStudent);
 router.post('/create', StudentController.createStudent);
 router.post('/refreshToken',  StudentController.refreshToken)
 router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
-router.get('/getDetailsLecturer/:id', authLecturerMiddleWare, StudentController.getDetailsLecturer)
+router.get('/getDetailsLecturer/:id', authLecturerMiddleWare, StudentController.getDetails)
 router.get('/getAll', StudentController.getAllStudents) 
 router.post('/forgotPassword', StudentController.forgotPassword) 
 // router.post('/verifyOtp', StudentController.verifyOtp); 
