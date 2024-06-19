@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router()
 
 const StudentController = require('../controllers/StudentController');
-const { authUserMiddleWare } = require("../middlewares/authMiddleware");
+const { authUserMiddleWare, authLecturerMiddleWare } = require("../middlewares/authMiddleware");
 
 // CRUD - Create Review Update Delete
 router.post('/signin', StudentController.loginStudent) //  login of Student
@@ -11,6 +11,7 @@ router.post('/logout', StudentController.logoutStudent);
 router.post('/create', StudentController.createStudent);
 router.post('/refreshToken',  StudentController.refreshToken)
 router.get('/getDetails/:id', authUserMiddleWare, StudentController.getDetails)
+router.get('/getDetailsLecturer/:id', authLecturerMiddleWare, StudentController.getDetailsLecturer)
 router.get('/getAll', StudentController.getAllStudents) 
 router.post('/forgotPassword', StudentController.forgotPassword) 
 // router.post('/verifyOtp', StudentController.verifyOtp); 
