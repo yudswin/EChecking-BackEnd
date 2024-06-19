@@ -280,7 +280,7 @@ const changePassword = async (email, otp, newPassword) => {
             const hashedPassword = bcrypt.hashSync(newPassword, 10);
             const updatedLecturer = await Lecturer.findOneAndUpdate(
                 { email: email },
-                { password: hashedPassword },
+                { lecturerPassword: hashedPassword },
                 { new: true }
             );
             if (!updatedLecturer) {
