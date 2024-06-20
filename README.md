@@ -21,12 +21,12 @@ Vault leverages several cutting-edge technologies to provide a robust and user-f
 - **ReactJS**: For creating dynamic and interactive user interfaces in a modular and efficient way.
 
 ## Team Members
-| Name            | Role in Project       | Contact Information          |
-|-----------------|-----------------------|------------------------------|
-| Nguyễn Quang Duy| FullStack Developer   | nqduy.ityu@gmail.com         |
-| Nguyễn Bá Phúc  | Back-end Developer    | phucnguyenba217@gmail.com    |
-|                 | UI/UX Designer        |                              |
-
+| Name                | Role in Project       | Contact Information          |
+|---------------------|-----------------------|------------------------------|
+| Nguyễn Quang Duy    | FullStack Developer   | nqduy.ityu@gmail.com         |
+| Nguyễn Bá Phúc      | Back-end Developer    | phucnguyenba217@gmail.com    |
+|                     | UI/UX Designer        |                              |
+| Trần Đức Hải Triều  | Front-end Developer   | Darkdarkinblade@gmail.com    |
 
 ## Getting Started
 To get started with Vault, teachers and students need to register and create their respective accounts. Once logged in, teachers can access the administrative panel, while students are directed to their personal dashboard.
