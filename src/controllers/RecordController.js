@@ -111,6 +111,19 @@ const getTotalDistinctRecord = async (req, res) => {
 
 }
 
+const downloadFile = async (req, res) => {
+    try {
+        const filePath = req.body.filePath; 
+        const fileStream = await RecordService.downloadFile(filePath);
+        res.setHeader('Content-Disposition', 'attachment; filename=' + path.basename(filePath));
+        fileStream.pipe(res);
+    } catch (e) {
+        return res.status(404).json({
+            message: e.message
+        });
+    }
+}
+
 
 
 module.exports = {
@@ -118,5 +131,6 @@ module.exports = {
     getAllRecord,
     createNormal,
     getTotalRecord,
-    getTotalDistinctRecord
+    getTotalDistinctRecord,
+    downloadFile
 }

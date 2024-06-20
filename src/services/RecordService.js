@@ -1,17 +1,19 @@
 const Record = require('../models/RecordModel');
+const fs = require('fs');
+const path = require('path');
 
 const createRecord = (session, newRecord, submissionPath) => {
     return new Promise(async (resolve, reject) => {
-        
+
         // Handle multiple files in one path
-        let path= ''
-        submissionPath.forEach(function(files, index, arr) {
+        let path = ''
+        submissionPath.forEach(function (files, index, arr) {
             path = path + files.path + ','
         });
         path = path.substring(0, path.lastIndexOf(","))
 
         // check path 
-        if(path ==""){
+        if (path == "") {
             resolve({
                 status: 'ERROR',
                 message: 'Invalid Type of File'
@@ -143,10 +145,28 @@ const getTotalDistinctRecord = (session) => {
 
 }
 
+const downloadFile = (filePath) => {
+    return new Promise((resolve, reject) => {
+        // Validate and sanitize the filePath here if necessary
+        // You can also check if the file exists and is accessible
+        const absolutePath = path.resolve(filePath);
+        fs.access(absolutePath, fs.constants.F_OK | fs.constants.R_OK, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                const fileStream = fs.createReadStream(absolutePath);
+                resolve(fileStream);
+            }
+        });
+    });
+}
+
+
 module.exports = {
     createRecord,
     getAllRecord,
     createNormal,
     getTotalRecord,
-    getTotalDistinctRecord
+    getTotalDistinctRecord,
+    downloadFile
 }
