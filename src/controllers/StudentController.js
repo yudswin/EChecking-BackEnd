@@ -68,23 +68,6 @@ const loginStudent = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   try {
-    // Verify the access token
-    const accessToken = req.headers.authorization?.split(" ")[1];
-    if (!accessToken) {
-      return res.status(401).json({
-        status: "ERROR",
-        msg: "Access token is required",
-      });
-    }
-
-    const verified = await JwtService.verifyAccessToken(accessToken);
-    if (!verified) {
-      return res.status(403).json({
-        status: "ERROR",
-        msg: "Invalid or expired access token",
-      });
-    }
-
     const StudentId = req.params.id;
     const data = req.body;
     if (!StudentId) {
