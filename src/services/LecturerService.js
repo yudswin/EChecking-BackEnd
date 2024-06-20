@@ -89,51 +89,51 @@ const loginLecturer = (LecturerLogin) => {
         }
     })
 }
-const updateLecturer = async (id, updateData) => {
-    return await Lecturer.findByIdAndUpdate(id, updateData, { new: true });
-};
-// const updateLecturer = (id, data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!mongoose.Types.ObjectId.isValid(id)) {
-//                 resolve({
-//                     status: "Error",
-//                     message: "Invalid ID format"
-//                 });
-//                 return;
-//             }
-//             const checkLecturer = await Lecturer.findOne({
-//                 _id: id
-//             });
+const updateLecturer = (id, newLecturer) => {
+    return new Promise(async (resolve, reject) => {
+        const { firstName, lastName, phone } = newLecturer
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                resolve({
+                    status: "Error",
+                    message: "Invalid ID format"
+                });
+                return;
+            }
 
-//             if (checkLecturer === null) {
-//                 resolve({
-//                     status: "Error",
-//                     message: "The lecturer is not defined"
-//                 });
-//                 return;
-//             }
-            
-//             const updatedLecturer = await Lecturer.findByIdAndUpdate(id, data, { new: true });
-//             if (!updatedLecturer) {
-//                 resolve({
-//                     status: "Error",
-//                     message: "Update failed"
-//                 });
-//                 return;
-//             }
+            const checkLecturer = await Lecturer.findOne({
+                _id: id
+            });
 
-//             resolve({
-//                 status: "OK",
-//                 message: "SUCCESS",
-//                 data: updatedLecturer
-//             });
+            if (checkLecturer === null) {
+                resolve({
+                    status: "Error",
+                    message: "The lecturer is not defined"
+                });
+                return;
+            }
 
-//         } catch (e) {
-//             reject(e);
-//         }
-//     });
-// }
+            const updatedLecturer = await Lecturer.findOneAndUpdate({
+                _id: id
+            }, {
+                firstName,
+                lastName,
+                phone
+            }, {
+                new: true
+            })
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: updatedLecturer
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+
+}
 
 const getDetails = (id) => {
     return new Promise(async (resolve, reject) => {
