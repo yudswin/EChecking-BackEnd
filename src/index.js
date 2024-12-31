@@ -29,16 +29,15 @@ app.use(cookieParser())
 routes(app);
 
 
-const port = process.env.PORT || 3001
+const port = process.env.PORT
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
-        console.log('Connect Db success!')
-        //        console.log(absolutePath)
+        console.log('Connect Db success!');
     })
     .catch((err) => {
-        console.log(err)
-    })
+        console.log(err);
+    });
 
 
 app.listen(port, () => {

@@ -4,6 +4,7 @@ const RecordRouter = require('./RecordRouter')
 const LecturerRouter = require('./LecturerRouter')
 const StudentRouter = require('./StudentRouter')
 const GeminiRouter = require('./GeminiRouter')
+const NewsRouter = require('./NewsRouter')
 const express = require("express");
 
 const routes = (app) => {
@@ -13,6 +14,7 @@ const routes = (app) => {
     app.use('/api/attendance', AttendanceRouter)
     app.use('/api/record', RecordRouter)
     app.use('/api/gemini', GeminiRouter)
+    app.use('/api/news', NewsRouter)
 }
 
 module.exports = routes
