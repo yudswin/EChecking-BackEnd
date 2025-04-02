@@ -46,9 +46,9 @@ const handleSePay = async (req, res) => {
                         { name: 'Description', value: description || 'N/A', inline: false }
                     ],
                     timestamp: timestamp || new Date().toISOString(),
-                    content: transferType == "out" ? ('💰 **TIỀN VỀ** - ' + transferAmount)   : ('📤 **CHUYỂN KHOẢN** - ' + transferAmount)
                 }
-            ]
+            ],
+            content: transferType == "out" ? ('💰 **TIỀN VỀ** - ' + transferAmount)   : ('📤 **CHUYỂN KHOẢN** - ' + transferAmount)
         };
 
         console.log('[WebHook] Sending message to Discord webhook...');
