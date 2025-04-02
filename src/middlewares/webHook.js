@@ -19,7 +19,14 @@ const handleSePay = async (req, res) => {
             timestamp
         } = req.body;
 
-        console.log('[WebHook] Processing transaction:', transactionId, 'of type:', transferType);
+        console.log('[WebHook] Processing transaction data');
+        
+        // Debug log to see what values we have
+        console.log('[WebHook] Transaction values:', {
+            transactionId,
+            transferType,
+            transferAmount
+        });
 
         const discordMessage = {
             username: 'SePay Bot',
@@ -28,11 +35,11 @@ const handleSePay = async (req, res) => {
                     title: 'SePay Transaction Notification',
                     color: transferType === 'CREDIT' ? 3066993 : 15158332, // Green for credit, red for debit
                     fields: [
-                        { name: 'Transaction ID', value: transactionId.toString(), inline: true },
+                        { name: 'Transaction ID', value: transactionId ? transactionId.toString() : 'N/A', inline: true },
                         { name: 'Bank', value: bank || 'N/A', inline: true },
                         { name: 'Transaction Date', value: transactionDate || 'N/A', inline: true },
                         { name: 'Account Number', value: accountNumber || 'N/A', inline: true },
-                        { name: 'Type', value: transferType, inline: true },
+                        { name: 'Type', value: transferType || 'N/A', inline: true },
                         { name: 'Amount', value: transferAmount ? transferAmount.toString() : 'N/A', inline: true },
                         { name: 'Accumulated', value: accumulated ? accumulated.toString() : 'N/A', inline: true },
                         { name: 'Reference Code', value: referenceCode || 'N/A', inline: true },
