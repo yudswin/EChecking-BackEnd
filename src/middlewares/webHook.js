@@ -29,11 +29,10 @@ const handleSePay = async (req, res) => {
         });
 
         const discordMessage = {
-            username: 'SePay Bot',
             embeds: [
                 {
                     title: 'SePay Transaction Notification',
-                    color: transferType === 'CREDIT' ? 3066993 : 15158332, // Green for credit, red for debit
+                    color: transferType == 'in' ? 3066993 : 15158332, // Green for credit, red for debit
                     fields: [
                         { name: 'Transaction ID', value: transactionId ? transactionId.toString() : 'N/A', inline: true },
                         { name: 'Bank', value: bank || 'N/A', inline: true },
@@ -47,6 +46,7 @@ const handleSePay = async (req, res) => {
                         { name: 'Description', value: description || 'N/A', inline: false }
                     ],
                     timestamp: timestamp || new Date().toISOString(),
+                    content: transferType == "out" ? ('💰 **TIỀN VỀ** - ' + transferAmount)   : ('📤 **CHUYỂN KHOẢN** - ' + transferAmount)
                 }
             ]
         };
